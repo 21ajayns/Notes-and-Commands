@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [NoteController::class, 'index'])->name('notes.index');
-Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+Route::get('/notes', [NoteController::class, 'getAll'])->name('notes.index');
+Route::post('/notes', [NoteController::class, 'create'])->name('notes.store');
 
 Route::get('/commands', [CommandController::class, 'index'])->name('commands.index');

@@ -2,31 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreNoteRequest;
+use App\Dto\NoteDto;
+use App\Http\Requests\NoteRequest;
 use App\Repositories\Contracts\NoteRepositoryInterface;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class NoteController extends Controller
 {
-    public function __construct(
-        private readonly NoteRepositoryInterface $notes
-    ) {
+    private NoteRepositoryInterface $repo;
+
+    public function __construct(NoteRepositoryInterface $repo)
+    {
+        $this->repo = $repo;
     }
 
-    public function index(): View
+    public function create(NoteRequest $request): JsonResponse
     {
-        return view('dashboard', [
-            'notes' => $this->notes->all(),
-        ]);
+        $note = $this->repo->create(new NoteDto(
+            $request->get('title'),
+            $request->get('body'),
+            $request->get('category')
+        ));
+
+        return new JsonResponse($note->toArray(), Response::HTTP_CREATED);
     }
 
-    public function store(StoreNoteRequest $request): RedirectResponse
+    public function getAll(): JsonResponse
     {
-        $this->notes->create($request->validated());
+        $notes = $this->repo->getAll();
 
-        return redirect()
-            ->route('notes.index')
-            ->with('status', 'Note created.');
+        return new JsonResponse(['notes' => $notes->toArray()]);
     }
 }

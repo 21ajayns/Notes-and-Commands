@@ -11,17 +11,17 @@
     <div class="flex h-screen overflow-hidden">
 
         {{-- Sidebar --}}
-        <aside class="w-56 bg-black border-r border-zinc-900 flex flex-col py-8 px-4 shrink-0">
-            <h1 class="text-xl font-semibold tracking-[0.35em] text-zinc-300 text-center mb-10">HEKLER</h1>
+        <aside class="w-64 bg-black border-r border-zinc-900 flex flex-col py-10 px-5 shrink-0">
+            <h1 class="text-2xl font-bold tracking-[0.3em] text-white text-center mb-12">HEKLER</h1>
 
-            <nav class="flex flex-col gap-1">
+            <nav class="flex flex-col gap-1.5">
                 <a href="{{ route('notes.index') }}"
-                    class="px-4 py-2.5 rounded-lg text-sm font-medium transition
+                    class="px-4 py-3 rounded-xl text-base font-medium transition
                         {{ request()->routeIs('notes.*') ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-900' }}">
                     Notes
                 </a>
                 <a href="{{ route('commands.index') }}"
-                    class="px-4 py-2.5 rounded-lg text-sm font-medium transition
+                    class="px-4 py-3 rounded-xl text-base font-medium transition
                         {{ request()->routeIs('commands.*') ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-900' }}">
                     Commands
                 </a>
@@ -29,10 +29,10 @@
         </aside>
 
         {{-- Main --}}
-        <main class="flex-1 bg-zinc-800/70 overflow-y-auto p-8">
-            <div class="max-w-5xl mx-auto">
+        <main class="flex-1 bg-zinc-800/70 overflow-y-auto p-10">
+            <div class="max-w-6xl mx-auto">
                 @if (session('status'))
-                    <div class="bg-emerald-500/10 text-emerald-400 text-sm rounded-lg px-4 py-2.5 mb-6">
+                    <div class="bg-emerald-500/10 text-emerald-400 text-sm font-medium rounded-xl px-5 py-3 mb-8">
                         {{ session('status') }}
                     </div>
                 @endif

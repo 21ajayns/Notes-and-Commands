@@ -31,6 +31,12 @@
         {{-- Main --}}
         <main class="flex-1 bg-zinc-800/70 overflow-y-auto p-8">
             <div class="max-w-5xl mx-auto">
+                @if (session('status'))
+                    <div class="bg-emerald-500/10 text-emerald-400 text-sm rounded-lg px-4 py-2.5 mb-6">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 {{ $slot }}
             </div>
         </main>

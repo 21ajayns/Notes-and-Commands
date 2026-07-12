@@ -28,17 +28,23 @@
             @csrf
             <h3 class="text-sm font-semibold text-white mb-4">New note</h3>
 
-            <input type="text" name="title" placeholder="Title" required
-                class="w-full bg-zinc-800 placeholder-zinc-500 text-white text-sm rounded-lg px-3 py-2 outline-none mb-3">
+            <input type="text" name="title" placeholder="Title" value="{{ old('title') }}"
+                class="w-full bg-zinc-800 placeholder-zinc-500 text-white text-sm rounded-lg px-3 py-2 outline-none mb-1">
+            @error('title')
+                <p class="text-xs text-red-400 mb-2">{{ $message }}</p>
+            @enderror
 
             <textarea name="body" placeholder="Write something..." rows="4"
-                class="w-full bg-zinc-800 placeholder-zinc-500 text-zinc-200 text-sm rounded-lg px-3 py-2 outline-none resize-none mb-3"></textarea>
+                class="w-full bg-zinc-800 placeholder-zinc-500 text-zinc-200 text-sm rounded-lg px-3 py-2 outline-none resize-none mb-1 mt-2">{{ old('body') }}</textarea>
+            @error('body')
+                <p class="text-xs text-red-400 mb-2">{{ $message }}</p>
+            @enderror
 
             <select name="category"
-                class="w-full bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-2 outline-none mb-5">
-                <option value="personal">Personal</option>
-                <option value="work">Work</option>
-                <option value="entertainment">Entertainment</option>
+                class="w-full bg-zinc-800 text-zinc-200 text-sm rounded-lg px-3 py-2 outline-none mb-5 mt-2">
+                @foreach(['personal' => 'Personal', 'work' => 'Work', 'entertainment' => 'Entertainment'] as $value => $label)
+                    <option value="{{ $value }}" @selected(old('category') === $value)>{{ $label }}</option>
+                @endforeach
             </select>
 
             <div class="flex items-center justify-end gap-2">
@@ -53,5 +59,11 @@
             </div>
         </form>
     </dialog>
+
+    @if ($errors->any())
+        <script>
+            document.getElementById('create-note').showModal();
+        </script>
+    @endif
 
 </x-layout>

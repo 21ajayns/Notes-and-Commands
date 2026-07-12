@@ -2,25 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreNoteRequest;
+use App\Repositories\Contracts\NoteRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class NoteController extends Controller
 {
-    public function index()
-    {
-        $notes = Note::all();
-        return view('dashboard', compact('notes'));
+    public function __construct(
+        private readonly NoteRepositoryInterface $notes
+    ) {
     }
 
-    public function store(Request $request)
+    public function index(): View
     {
-        Note::create([
-            'title' => $request->title,
-            'body' => $request->body,
-            'category' => $request->category,
+        return view('dashboard', [
+            'notes' => $this->notes->all(),
         ]);
+    }
 
-        return redirect()->back();
+    public function store(StoreNoteRequest $request): RedirectResponse
+    {
+        $this->notes->create($request->validated());
+
+        return redirect()
+            ->route('notes.index')
+            ->with('status', 'Note created.');
     }
 }

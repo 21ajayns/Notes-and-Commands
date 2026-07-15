@@ -42,7 +42,7 @@
     </div>
 
     {{-- Create note modal --}}
-    <dialog id="create-note" class="bg-zinc-900 text-zinc-200 rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/70">
+    <dialog id="create-note" class="m-auto bg-zinc-900 text-zinc-200 rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/70">
         <form action="{{ route('notes.store') }}" method="POST" class="p-8">
             @csrf
             <h3 class="text-xl font-bold text-white mb-6">New note</h3>
@@ -55,7 +55,7 @@
             @enderror
 
             <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2 mt-5">Body</label>
-            <textarea name="body" placeholder="Write something..." rows="4"
+            <textarea name="body" placeholder="Write something..." rows="10"
                 class="w-full bg-zinc-800 placeholder-zinc-500 text-zinc-200 text-base rounded-xl px-4 py-3 outline-none ring-1 ring-transparent focus:ring-indigo-500 transition resize-none mb-1">{{ old('body') }}</textarea>
             @error('body')
                 <p class="text-xs text-red-400 mt-1 mb-2">{{ $message }}</p>
@@ -63,7 +63,7 @@
 
             <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2 mt-5">Category</label>
             <select name="category"
-                class="w-full bg-zinc-800 text-zinc-200 text-base rounded-xl px-4 py-3 outline-none ring-1 ring-transparent focus:ring-indigo-500 transition mb-7">
+                class="w-auto bg-zinc-800 text-zinc-200 text-xs rounded-lg px-3 py-1.5 outline-none ring-1 ring-transparent focus:ring-indigo-500 transition mb-7">
                 @foreach(['personal' => 'Personal', 'work' => 'Work', 'entertainment' => 'Entertainment'] as $value => $label)
                     <option value="{{ $value }}" @selected(old('category') === $value)>{{ $label }}</option>
                 @endforeach

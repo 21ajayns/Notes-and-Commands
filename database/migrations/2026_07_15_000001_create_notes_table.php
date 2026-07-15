@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('body');
             $table->string('category')->default('personal');
+            $table->foreignId('folder_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

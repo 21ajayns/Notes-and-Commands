@@ -26,7 +26,7 @@ class FolderDto
         return $this->name;
     }
 
-    public function getParentId(): ?int
+    public function getParentId(): ?string
     {
         return $this->parentId;
     }

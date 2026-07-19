@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\FolderController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
+
 Route::get('/commands', [CommandController::class, 'index'])->name('commands.index');
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

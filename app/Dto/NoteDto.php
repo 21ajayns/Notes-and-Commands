@@ -9,16 +9,16 @@ class NoteDto
 
     private string $body;
 
-    private string $category;
+    private ?int $folderId;
 
     public function __construct(
         string $title,
         string $body,
-        string $category
+        ?int $folderId = null
     ) {
         $this->title = $title;
         $this->body = $body;
-        $this->category = $category;
+        $this->folderId = $folderId;
     }
 
     public function getTitle(): string
@@ -31,8 +31,8 @@ class NoteDto
         return $this->body;
     }
 
-    public function getCategory(): string
+    public function getFolderId(): ?int
     {
-        return $this->category;
+        return $this->folderId;
     }
 }

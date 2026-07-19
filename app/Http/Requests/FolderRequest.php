@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class NoteRequest extends FormRequest
+class FolderRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,9 +14,7 @@ class NoteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['required', 'string'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

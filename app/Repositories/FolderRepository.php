@@ -5,7 +5,7 @@ namespace App\Repositories;
 
 use App\Dto\FolderDto;
 use App\Models\Folder;
-use App\Repositories\Contracts\FolderRepositoryInterface;
+use App\Repositories\Interfaces\FolderRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class FolderRepository implements FolderRepositoryInterface

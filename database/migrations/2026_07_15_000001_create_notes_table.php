@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
+    /**q
      * Run the migrations.
      */
     public function up(): void
@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('body');
-            $table->string('category')->default('personal');
             $table->foreignId('folder_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

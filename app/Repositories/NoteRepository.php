@@ -5,7 +5,7 @@ namespace App\Repositories;
 
 use App\Dto\NoteDto;
 use App\Models\Note;
-use App\Repositories\Contracts\NoteRepositoryInterface;
+use App\Repositories\Interfaces\NoteRepositoryInterface;
 use Illuminate\Support\Collection;
 
 class NoteRepository implements NoteRepositoryInterface
@@ -16,7 +16,7 @@ class NoteRepository implements NoteRepositoryInterface
 
         $note->setAttribute('title', $create->getTitle());
         $note->setAttribute('body', $create->getBody());
-        $note->setAttribute('category', $create->getCategory());
+        $note->setAttribute('folder_id', $create->getFolderId());
 
         $note->save();
 
@@ -25,6 +25,6 @@ class NoteRepository implements NoteRepositoryInterface
 
     public function getAll(): Collection
     {
-        return (new Note())->all();
+        return Note::with('folder')->get();
     }
 }

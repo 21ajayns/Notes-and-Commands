@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Repositories\Contracts;
+namespace App\Repositories\Interfaces;
 
 use App\Dto\FolderDto;
 use App\Models\Folder;

@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Repositories\Contracts\FolderRepositoryInterface;
-use App\Repositories\Contracts\NoteRepositoryInterface;
+use App\Repositories\Interfaces\FolderRepositoryInterface;
+use App\Repositories\Interfaces\NoteRepositoryInterface;
 use App\Repositories\FolderRepository;
 use App\Repositories\NoteRepository;
 use Illuminate\Support\ServiceProvider;

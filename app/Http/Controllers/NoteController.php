@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Dto\NoteDto;
 use App\Http\Requests\NoteRequest;
-use App\Repositories\Contracts\NoteRepositoryInterface;
+use App\Repositories\Interfaces\FolderRepositoryInterface;
+use App\Repositories\Interfaces\NoteRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,9 +16,12 @@ class NoteController extends Controller
 {
     private NoteRepositoryInterface $repo;
 
-    public function __construct(NoteRepositoryInterface $repo)
+    private FolderRepositoryInterface $folderRepo;
+
+    public function __construct(NoteRepositoryInterface $repo, FolderRepositoryInterface $folderRepo)
     {
         $this->repo = $repo;
+        $this->folderRepo = $folderRepo;
     }
 
     public function create(NoteRequest $request): JsonResponse|RedirectResponse
@@ -25,7 +29,7 @@ class NoteController extends Controller
         $note = $this->repo->create(new NoteDto(
             $request->get('title'),
             $request->get('body'),
-            $request->get('category')
+            $request->get('folder_id') !== null ? (int) $request->get('folder_id') : null
         ));
 
         if ($request->expectsJson()) {
@@ -43,6 +47,9 @@ class NoteController extends Controller
             return new JsonResponse(['notes' => $notes->toArray()]);
         }
 
-        return view('dashboard', ['notes' => $notes]);
+        return view('dashboard', [
+            'notes' => $notes,
+            'folders' => $this->folderRepo->getAll(),
+        ]);
     }
 }

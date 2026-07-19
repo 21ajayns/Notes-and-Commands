@@ -12,14 +12,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @property string $title
  * @property string $body
- * @property string $category
  * @property int|null $folder_id
  */
 class Note extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'body', 'category', 'folder_id'];
+    protected $fillable = ['title', 'body', 'folder_id'];
 
     public function folder(): BelongsTo
     {

@@ -5,6 +5,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -17,4 +18,9 @@ class Folder extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'image'];
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
 }

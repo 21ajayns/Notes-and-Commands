@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\FolderController;
 use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/notes', [NoteController::class, 'getAll'])->name('notes.index');
-Route::post('/notes', [NoteController::class, 'create'])->name('notes.store');
+Route::get('/', [NoteController::class, 'getAll'])->name('notes.index');
+Route::post('/', [NoteController::class, 'create'])->name('notes.store');
+
+Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
 
 Route::get('/commands', [CommandController::class, 'index'])->name('commands.index');

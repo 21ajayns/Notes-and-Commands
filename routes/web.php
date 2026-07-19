@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\CommandController;
-use App\Http\Controllers\FolderController;
-use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,10 +13,5 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', [NoteController::class, 'getAll'])->name('notes.index');
-Route::post('/', [NoteController::class, 'create'])->name('notes.store');
-
-Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
 
 Route::get('/commands', [CommandController::class, 'index'])->name('commands.index');

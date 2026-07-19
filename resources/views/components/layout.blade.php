@@ -15,11 +15,6 @@
             <img src="{{ asset('images/logo.jpg') }}" alt="Hekler" class="w-4/5 h-auto object-contain mx-auto mb-12">
 
             <nav class="flex flex-col gap-1.5">
-                <a href="{{ route('notes.index') }}"
-                    class="px-4 py-3 rounded-xl text-base font-medium transition
-                        {{ request()->routeIs('notes.*') ? 'bg-green-100 text-green-800' : 'text-zinc-500 hover:text-green-700 hover:bg-green-50' }}">
-                    Notes
-                </a>
                 <a href="{{ route('commands.index') }}"
                     class="px-4 py-3 rounded-xl text-base font-medium transition
                         {{ request()->routeIs('commands.*') ? 'bg-green-100 text-green-800' : 'text-zinc-500 hover:text-green-700 hover:bg-green-50' }}">

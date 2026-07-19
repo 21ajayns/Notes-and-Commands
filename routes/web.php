@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CommandController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NoteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +18,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/', [ContentController::class, 'getAll'])->name('content.index');
+
+    Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
+
+    Route::post('/notes', [NoteController::class, 'create'])->name('notes.store');
+});
 
 Route::get('/commands', [CommandController::class, 'index'])->name('commands.index');
 

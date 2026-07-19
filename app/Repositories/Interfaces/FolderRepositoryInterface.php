@@ -12,5 +12,5 @@ interface FolderRepositoryInterface
 {
     public function create(FolderDto $create, User $user, ?Folder $parent = null): Folder;
 
-    public function getAll(): Collection;
+    public function getAll(User $user): Collection;
 }

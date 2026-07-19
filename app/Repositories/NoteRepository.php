@@ -30,8 +30,8 @@ class NoteRepository implements NoteRepositoryInterface
         return $note;
     }
 
-    public function getAll(): Collection
+    public function getAll(User $user): Collection
     {
-        return Note::with(['user', 'parent'])->get();
+        return Note::with(['user', 'parent'])->where('user_id', $user->id)->get();
     }
 }

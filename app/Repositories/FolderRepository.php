@@ -32,6 +32,6 @@ class FolderRepository implements FolderRepositoryInterface
 
     public function getAll(User $user): Collection
     {
-        return Folder::with(['parent', 'children'])->where('user_id', $user->id)->get();
+        return Folder::with(['parent', 'children', 'notes'])->where('user_id', $user->id)->get();
     }
 }

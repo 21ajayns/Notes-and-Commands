@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\FolderRepositoryInterface;
 use App\Repositories\Interfaces\NoteRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ContentController extends Controller
 {
@@ -19,16 +20,24 @@ class ContentController extends Controller
         $this->noteRepo = $noteRepo;
     }
 
-    public function getAll(Request $request): JsonResponse
+    public function getAll(Request $request): JsonResponse|View
     {
         $user = $request->user();
 
         $folders = $this->folderRepo->getAll($user)->whereNull('parent_id')->values();
         $notes = $this->noteRepo->getAll($user)->whereNull('parent_id')->values();
 
-        return new JsonResponse([
+        if ($request->expectsJson()) {
+            return new JsonResponse([
+                'folders' => $folders,
+                'notes' => $notes,
+            ]);
+        }
+
+        return view('content', [
             'folders' => $folders,
             'notes' => $notes,
+            'allFolders' => $this->folderRepo->getAll($user),
         ]);
     }
 }

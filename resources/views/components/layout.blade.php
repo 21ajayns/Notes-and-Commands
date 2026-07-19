@@ -15,12 +15,31 @@
             <img src="{{ asset('images/logo.jpg') }}" alt="Hekler" class="w-4/5 h-auto object-contain mx-auto mb-12">
 
             <nav class="flex flex-col gap-1.5">
+                <a href="{{ route('content.index') }}"
+                    class="px-4 py-3 rounded-xl text-base font-medium transition
+                        {{ request()->routeIs('content.*') ? 'bg-green-100 text-green-800' : 'text-zinc-500 hover:text-green-700 hover:bg-green-50' }}">
+                    Home
+                </a>
                 <a href="{{ route('commands.index') }}"
                     class="px-4 py-3 rounded-xl text-base font-medium transition
                         {{ request()->routeIs('commands.*') ? 'bg-green-100 text-green-800' : 'text-zinc-500 hover:text-green-700 hover:bg-green-50' }}">
                     Commands
                 </a>
             </nav>
+
+            @auth
+                <div class="mt-auto pt-6 border-t border-green-200/60">
+                    <p class="px-4 text-sm font-semibold text-zinc-700 truncate">{{ auth()->user()->name }}</p>
+                    <p class="px-4 text-xs text-zinc-400 truncate mb-3">{{ auth()->user()->email }}</p>
+                    <form action="{{ route('logout') }}" method="POST" class="px-1">
+                        @csrf
+                        <button type="submit"
+                            class="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-zinc-500 hover:text-red-600 hover:bg-red-50 transition">
+                            Log out
+                        </button>
+                    </form>
+                </div>
+            @endauth
         </aside>
 
         {{-- Main --}}

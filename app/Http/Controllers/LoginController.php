@@ -8,10 +8,16 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
+    public function show(): View
+    {
+        return view('auth.login');
+    }
+
     public function login(LoginRequest $request): JsonResponse|RedirectResponse
     {
         $credentials = $request->only('email', 'password');

@@ -8,11 +8,11 @@
 </head>
 <body class="antialiased">
 
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-100 to-white p-6">
+    <div class="min-h-screen flex items-center justify-center bg-black p-6">
         <div class="w-full max-w-sm">
-            <img src="{{ asset('images/logo.jpg') }}" alt="Hekler" class="w-3/5 h-auto object-contain mx-auto mb-8">
+            <h1 class="text-2xl font-bold tracking-[0.3em] text-white text-center mb-8">HEKLER</h1>
 
-            <div class="bg-white/80 border border-green-200 rounded-2xl shadow-xl shadow-green-900/5 p-8">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl shadow-black/40 p-8">
                 {{ $slot }}
             </div>
         </div>

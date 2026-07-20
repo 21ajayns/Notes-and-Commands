@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\CommandController;
-use App\Http\Controllers\ContentController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\NoteGetController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', [ContentController::class, 'getAll'])->name('content.index');
+    Route::get('/', [NoteGetController::class, 'getAll'])->name('content.index');
 
     Route::post('/folders', [FolderController::class, 'create'])->name('folders.store');
 

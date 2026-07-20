@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class ContentController extends Controller
+class NoteGetController extends Controller
 {
     private FolderRepositoryInterface $folderRepo;
 
@@ -24,8 +24,12 @@ class ContentController extends Controller
     {
         $user = $request->user();
 
-        $folders = $this->folderRepo->getAll($user)->whereNull('parent_id')->values();
-        $notes = $this->noteRepo->getAll($user)->whereNull('parent_id')->values();
+        $folderId = $request->get('folder_id') ? (int) $request->get('folder_id') : null;
+
+        $allFolders = $this->folderRepo->getAll($user);
+
+        $folders = $allFolders->where('parent_id', $folderId)->values();
+        $notes = $this->noteRepo->getAll($user)->where('parent_id', $folderId)->values();
 
         if ($request->expectsJson()) {
             return new JsonResponse([
@@ -37,7 +41,8 @@ class ContentController extends Controller
         return view('content', [
             'folders' => $folders,
             'notes' => $notes,
-            'allFolders' => $this->folderRepo->getAll($user),
+            'allFolders' => $allFolders,
+            'currentFolder' => $folderId ? $allFolders->firstWhere('id', $folderId) : null,
         ]);
     }
 }

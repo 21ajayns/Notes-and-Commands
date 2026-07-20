@@ -14,8 +14,10 @@ class NoteGetController extends Controller
 
     private NoteRepositoryInterface $noteRepo;
 
-    public function __construct(FolderRepositoryInterface $folderRepo, NoteRepositoryInterface $noteRepo)
-    {
+    public function __construct(
+        FolderRepositoryInterface $folderRepo,
+        NoteRepositoryInterface $noteRepo
+    ) {
         $this->folderRepo = $folderRepo;
         $this->noteRepo = $noteRepo;
     }

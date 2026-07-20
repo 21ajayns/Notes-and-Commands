@@ -8,7 +8,7 @@
 </head>
 <body class="antialiased">
 
-    <div class="min-h-screen flex items-center justify-center bg-black p-6">
+    <div class="min-h-screen flex items-center justify-center bg-zinc-950 p-6">
         <div class="w-full max-w-sm">
             <h1 class="text-2xl font-bold tracking-[0.3em] text-white text-center mb-8">HEKLER</h1>
 

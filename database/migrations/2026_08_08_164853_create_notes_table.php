@@ -6,13 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    private const TABLE = 'notes';
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('notes', function (Blueprint $table) {
-            $table->id();
+        Schema::create(self::TABLE, function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('title');
+            $table->longText('content');
+            $table->string('category');
             $table->timestamps();
         });
     }
@@ -22,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notes');
+        Schema::dropIfExists(self::TABLE);
     }
 };

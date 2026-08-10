@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Repositories\Note;
+
+use App\DataTransferObjects\Note\NoteCreateDto;
+use App\Models\Note\Note;
+use App\Repositories\Interfaces\Note\NoteRepositoryInterface;
+
+class NoteRepository implements NoteRepositoryInterface
+{
+    public function create(NoteCreateDto $createDto): Note
+    {
+        $note = new Note();
+        $note->setAttribute('title', $createDto->getTitle());
+        $note->setAttribute('content', $createDto->getContent());
+        $note->setAttribute('category', $createDto->getCategory()->getValue());
+
+        $note->save();
+
+        return $note;
+    }
+}

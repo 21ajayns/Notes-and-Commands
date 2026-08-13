@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin \Illuminate\Database\Eloquent\Builder
  *
  * @property string $name
+ * @property string $category
  * @property string|null $folder_id
  */
 final class Folder extends AbstractModel
@@ -18,6 +19,7 @@ final class Folder extends AbstractModel
 
     protected $fillable = [
         'name',
+        'category',
         'folder_id',
     ];
 
@@ -31,6 +33,7 @@ final class Folder extends AbstractModel
         return $this->serialise([
             'id' => $this->getAttribute('id'),
             'name' => $this->getAttribute('name'),
+            'category' => $this->getAttribute('category'),
             'folder_id' => $this->getAttribute('folder_id'),
         ]);
     }

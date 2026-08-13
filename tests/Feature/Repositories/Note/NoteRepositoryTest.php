@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Repositories\Note;
 
-use App\Constants\Note\NoteCategoryEnum;
+use App\Constants\CategoryEnum;
 use App\DataTransferObjects\Folder\FolderCreateDto;
 use App\DataTransferObjects\Note\NoteCreateDto;
 use App\Repositories\Folder\FolderRepository;
@@ -20,7 +20,7 @@ class NoteRepositoryTest extends TestCase
         $dto = new NoteCreateDto(
             'Standup notes',
             'Discussed roadmap for Q3',
-            NoteCategoryEnum::OFFICE()
+            CategoryEnum::OFFICE()
         );
 
         $note = (new NoteRepository())->create($dto);
@@ -38,7 +38,7 @@ class NoteRepositoryTest extends TestCase
         $dto = new NoteCreateDto(
             'Grocery list',
             'Milk, eggs, bread',
-            NoteCategoryEnum::PERSONAL()
+            CategoryEnum::PERSONAL()
         );
 
         $note = (new NoteRepository())->create($dto);
@@ -56,7 +56,7 @@ class NoteRepositoryTest extends TestCase
         $dto = new NoteCreateDto(
             'Standup notes',
             'Discussed roadmap for Q3',
-            NoteCategoryEnum::OFFICE()
+            CategoryEnum::OFFICE()
         );
 
         $note = (new NoteRepository())->create($dto);
@@ -66,12 +66,12 @@ class NoteRepositoryTest extends TestCase
 
     public function testCreatePersistsANoteLinkedToAFolder(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work'));
+        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
 
         $dto = new NoteCreateDto(
             'Standup notes',
             'Discussed roadmap for Q3',
-            NoteCategoryEnum::OFFICE(),
+            CategoryEnum::OFFICE(),
             $folder->getAttribute('id')
         );
 
@@ -83,5 +83,25 @@ class NoteRepositoryTest extends TestCase
             'id' => $note->getAttribute('id'),
             'folder_id' => $folder->getAttribute('id'),
         ]);
+    }
+
+    public function testAllReturnsEveryNote(): void
+    {
+        $repository = new NoteRepository();
+
+        $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+
+        $notes = $repository->all();
+
+        $this->assertCount(2, $notes);
+        $this->assertSame(['Standup notes', 'Grocery list'], $notes->pluck('title')->all());
+    }
+
+    public function testAllReturnsAnEmptyCollectionWhenNoNotesExist(): void
+    {
+        $notes = (new NoteRepository())->all();
+
+        $this->assertCount(0, $notes);
     }
 }

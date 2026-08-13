@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\DataTransferObjects\Note;
 
-use App\Constants\Note\NoteCategoryEnum;
+use App\Constants\CategoryEnum;
 
 class NoteCreateDto
 {
@@ -11,14 +11,14 @@ class NoteCreateDto
 
     private string $content;
 
-    private NoteCategoryEnum $category;
+    private CategoryEnum $category;
 
     private ?string $folderId;
 
     public function __construct(
         string $title,
         string $content,
-        NoteCategoryEnum $category,
+        CategoryEnum $category,
         ?string $folderId = null
     ) {
         $this->title = $title;
@@ -37,7 +37,7 @@ class NoteCreateDto
         return $this->content;
     }
 
-    public function getCategory(): NoteCategoryEnum
+    public function getCategory(): CategoryEnum
     {
         return $this->category;
     }

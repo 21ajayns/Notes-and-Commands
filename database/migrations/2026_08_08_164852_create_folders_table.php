@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create(self::TABLE, function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
+            $table->string('category');
             $table->foreignUuid('folder_id')->nullable()->constrained(self::TABLE)->nullOnDelete();
             $table->timestamps();
         });

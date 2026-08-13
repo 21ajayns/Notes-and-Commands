@@ -6,6 +6,7 @@ namespace App\Repositories\Note;
 use App\DataTransferObjects\Note\NoteCreateDto;
 use App\Models\Note\Note;
 use App\Repositories\Interfaces\Note\NoteRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class NoteRepository implements NoteRepositoryInterface
 {
@@ -20,5 +21,10 @@ class NoteRepository implements NoteRepositoryInterface
         $note->save();
 
         return $note;
+    }
+
+    public function all(): Collection
+    {
+        return Note::all();
     }
 }

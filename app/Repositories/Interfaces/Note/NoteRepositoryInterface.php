@@ -5,8 +5,11 @@ namespace App\Repositories\Interfaces\Note;
 
 use App\DataTransferObjects\Note\NoteCreateDto;
 use App\Models\Note\Note;
+use Illuminate\Database\Eloquent\Collection;
 
 interface NoteRepositoryInterface
 {
     public function create(NoteCreateDto $createDto): Note;
+
+    public function all(): Collection;
 }

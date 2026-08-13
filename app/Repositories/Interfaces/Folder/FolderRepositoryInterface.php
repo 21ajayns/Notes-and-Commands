@@ -11,5 +11,5 @@ interface FolderRepositoryInterface
 {
     public function create(FolderCreateDto $createDto): Folder;
 
-    public function all(): Collection;
+    public function all(?string $folderId = null): Collection;
 }

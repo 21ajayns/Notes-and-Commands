@@ -85,7 +85,7 @@ class NoteRepositoryTest extends TestCase
         ]);
     }
 
-    public function testAllReturnsEveryNote(): void
+    public function testAllReturnsTopLevelNotesWhenNoFolderIdGiven(): void
     {
         $repository = new NoteRepository();
 
@@ -96,6 +96,20 @@ class NoteRepositoryTest extends TestCase
 
         $this->assertCount(2, $notes);
         $this->assertSame(['Standup notes', 'Grocery list'], $notes->pluck('title')->all());
+    }
+
+    public function testAllReturnsOnlyNotesUnderTheGivenFolderId(): void
+    {
+        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+
+        $repository = new NoteRepository();
+        $inFolder = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
+        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+
+        $notes = $repository->all($folder->getAttribute('id'));
+
+        $this->assertCount(1, $notes);
+        $this->assertSame($inFolder->getAttribute('id'), $notes->first()->getAttribute('id'));
     }
 
     public function testAllReturnsAnEmptyCollectionWhenNoNotesExist(): void

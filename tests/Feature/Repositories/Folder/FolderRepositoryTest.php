@@ -62,7 +62,7 @@ class FolderRepositoryTest extends TestCase
         $this->assertSame($parent->getAttribute('id'), $child->parent->getAttribute('id'));
     }
 
-    public function testAllReturnsEveryFolder(): void
+    public function testAllReturnsTopLevelFoldersWhenNoFolderIdGiven(): void
     {
         $repository = new FolderRepository();
 
@@ -73,6 +73,20 @@ class FolderRepositoryTest extends TestCase
 
         $this->assertCount(2, $folders);
         $this->assertSame(['Work', 'Personal'], $folders->pluck('name')->all());
+    }
+
+    public function testAllReturnsOnlyFoldersUnderTheGivenFolderId(): void
+    {
+        $repository = new FolderRepository();
+
+        $parent = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $child = $repository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+
+        $folders = $repository->all($parent->getAttribute('id'));
+
+        $this->assertCount(1, $folders);
+        $this->assertSame($child->getAttribute('id'), $folders->first()->getAttribute('id'));
     }
 
     public function testAllReturnsAnEmptyCollectionWhenNoFoldersExist(): void

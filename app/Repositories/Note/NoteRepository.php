@@ -23,8 +23,10 @@ class NoteRepository implements NoteRepositoryInterface
         return $note;
     }
 
-    public function all(): Collection
+    public function all(?string $folderId = null): Collection
     {
-        return Note::all();
+        return Note::query()
+            ->where('folder_id', $folderId)
+            ->get();
     }
 }

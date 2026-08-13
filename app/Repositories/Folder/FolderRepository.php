@@ -22,8 +22,10 @@ class FolderRepository implements FolderRepositoryInterface
         return $folder;
     }
 
-    public function all(): Collection
+    public function all(?string $folderId = null): Collection
     {
-        return Folder::all();
+        return Folder::query()
+            ->where('folder_id', $folderId)
+            ->get();
     }
 }

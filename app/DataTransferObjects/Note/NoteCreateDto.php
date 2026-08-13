@@ -13,14 +13,18 @@ class NoteCreateDto
 
     private NoteCategoryEnum $category;
 
+    private ?string $folderId;
+
     public function __construct(
         string $title,
         string $content,
-        NoteCategoryEnum $category
+        NoteCategoryEnum $category,
+        ?string $folderId = null
     ) {
         $this->title = $title;
         $this->content = $content;
         $this->category = $category;
+        $this->folderId = $folderId;
     }
 
     public function getTitle(): string
@@ -36,5 +40,10 @@ class NoteCreateDto
     public function getCategory(): NoteCategoryEnum
     {
         return $this->category;
+    }
+
+    public function getFolderId(): ?string
+    {
+        return $this->folderId;
     }
 }

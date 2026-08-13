@@ -11,6 +11,7 @@ use App\AbstractModel;
  * @property string $title
  * @property string $content
  * @property string $category
+ * @property string|null $folder_id
  */
 final class Note extends AbstractModel
 {
@@ -20,6 +21,7 @@ final class Note extends AbstractModel
         'title',
         'content',
         'category',
+        'folder_id',
     ];
 
     public function toArray(): array
@@ -29,6 +31,7 @@ final class Note extends AbstractModel
             'title' => $this->getAttribute('title'),
             'content' => $this->getAttribute('content'),
             'category' => $this->getAttribute('category'),
+            'folder_id' => $this->getAttribute('folder_id'),
         ]);
     }
 }

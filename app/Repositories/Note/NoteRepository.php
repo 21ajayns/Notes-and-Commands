@@ -15,6 +15,7 @@ class NoteRepository implements NoteRepositoryInterface
         $note->setAttribute('title', $createDto->getTitle());
         $note->setAttribute('content', $createDto->getContent());
         $note->setAttribute('category', $createDto->getCategory()->getValue());
+        $note->setAttribute('folder_id', $createDto->getFolderId());
 
         $note->save();
 

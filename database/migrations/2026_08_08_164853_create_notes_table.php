@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('content');
             $table->string('category');
+            $table->foreignUuid('folder_id')->nullable()->constrained('folders')->nullOnDelete();
             $table->timestamps();
         });
     }

@@ -95,4 +95,17 @@ class FolderRepositoryTest extends TestCase
 
         $this->assertCount(0, $folders);
     }
+
+    public function testAllFiltersByCategoryWhenGiven(): void
+    {
+        $repository = new FolderRepository();
+
+        $work = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+
+        $folders = $repository->all(null, 'office');
+
+        $this->assertCount(1, $folders);
+        $this->assertSame($work->getAttribute('id'), $folders->first()->getAttribute('id'));
+    }
 }

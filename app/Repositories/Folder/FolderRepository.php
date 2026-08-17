@@ -22,10 +22,11 @@ class FolderRepository implements FolderRepositoryInterface
         return $folder;
     }
 
-    public function all(?string $folderId = null): Collection
+    public function all(?string $folderId = null, ?string $category = null): Collection
     {
         return Folder::query()
             ->where('folder_id', $folderId)
+            ->when($category !== null, fn ($query) => $query->where('category', $category))
             ->get();
     }
 }

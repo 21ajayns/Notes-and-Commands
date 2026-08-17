@@ -17,7 +17,10 @@ class NoteGetController extends Controller
 
     public function __invoke(NoteGetRequest $request): JsonResponse
     {
-        $notes = $this->noteRepository->all($request->validated('folder_id'));
+        $notes = $this->noteRepository->all(
+            $request->validated('folder_id'),
+            $request->validated('category')
+        );
 
         return response()->json($notes);
     }

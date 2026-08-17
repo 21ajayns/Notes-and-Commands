@@ -118,4 +118,17 @@ class NoteRepositoryTest extends TestCase
 
         $this->assertCount(0, $notes);
     }
+
+    public function testAllFiltersByCategoryWhenGiven(): void
+    {
+        $repository = new NoteRepository();
+
+        $office = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+
+        $notes = $repository->all(null, 'office');
+
+        $this->assertCount(1, $notes);
+        $this->assertSame($office->getAttribute('id'), $notes->first()->getAttribute('id'));
+    }
 }

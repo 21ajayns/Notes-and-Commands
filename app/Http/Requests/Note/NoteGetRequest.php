@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Note;
 
+use App\Constants\CategoryEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class NoteGetRequest extends FormRequest
 {
@@ -16,6 +18,7 @@ class NoteGetRequest extends FormRequest
     {
         return [
             'folder_id' => ['nullable', 'string', 'exists:folders,id'],
+            'category' => ['nullable', 'string', Rule::in(CategoryEnum::toArray())],
         ];
     }
 }

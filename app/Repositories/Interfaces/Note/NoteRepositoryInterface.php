@@ -11,5 +11,5 @@ interface NoteRepositoryInterface
 {
     public function create(NoteCreateDto $createDto): Note;
 
-    public function all(?string $folderId = null): Collection;
+    public function all(?string $folderId = null, ?string $category = null): Collection;
 }

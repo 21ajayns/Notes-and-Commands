@@ -4,116 +4,184 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased">
+<body class="bg-ink-950 text-ink-100 antialiased font-sans text-sm">
 
 <div
     x-data="notesApp()"
     x-init="init()"
     class="flex h-screen overflow-hidden"
 >
-    <!-- Sidebar -->
-    <aside class="w-64 shrink-0 border-r border-gray-200 bg-white flex flex-col">
-        <div class="px-5 py-4 border-b border-gray-200">
-            <h1 class="text-lg font-semibold">Notes</h1>
+    <!-- Icon rail -->
+    <div class="w-16 shrink-0 bg-ink-950 border-r border-white/[0.06] flex flex-col items-center py-4 gap-3">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-card">
+            N
         </div>
 
-        <nav class="flex-1 overflow-y-auto px-3 py-3 space-y-1">
+        <div class="w-8 border-t border-white/[0.06]"></div>
+
+        <button
+            class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/[0.08] text-white transition-all"
+            title="Notes"
+        >
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 3a1 1 0 011-1h6l4 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1V3z"/><path d="M11 2v4h4"/></svg>
+        </button>
+
+        <button
+            class="w-10 h-10 rounded-xl flex items-center justify-center text-ink-500 opacity-40 cursor-not-allowed transition-all"
+            title="Todo — coming soon"
+            disabled
+        >
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-72 shrink-0 bg-ink-900 border-r border-white/[0.06] flex flex-col">
+        <div class="px-4 pt-4">
             <button
-                @click="goRoot()"
-                class="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100"
-                :class="currentFolderId === null ? 'bg-gray-100 text-gray-900' : 'text-gray-600'"
+                type="button"
+                @click="toggleCategory()"
+                class="flip-card w-full h-12 block"
             >
-                <span>🏠</span>
-                <span>All Notes</span>
+                <div class="flip-card-inner" :class="activeCategory === 'personal' ? 'flip-card-flipped' : ''">
+                    <div class="flip-face flip-face-front bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card">
+                        <span class="text-base">💼</span> Work
+                    </div>
+                    <div class="flip-face flip-face-back bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card">
+                        <span class="text-base">🏠</span> Personal
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <div class="px-4 pt-3">
+            <div class="relative">
+                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500">
+                    <circle cx="9" cy="9" r="6.5"/><path d="M18 18l-4-4" stroke-linecap="round"/>
+                </svg>
+                <input
+                    type="text"
+                    x-model="search"
+                    placeholder="Search folders…"
+                    class="input-field pl-9"
+                >
+            </div>
+        </div>
+
+        <div class="mx-4 mt-3 border-t border-white/[0.06]"></div>
+
+        <nav class="flex-1 overflow-y-auto py-3">
+            <button
+                @click="selectFolder(null)"
+                class="sidebar-item mx-3 px-2.5 py-2"
+                style="width: calc(100% - 24px)"
+                :class="selectedFolderId === null ? 'sidebar-item-active' : ''"
+            >
+                <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500 shrink-0"><path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0013.414 6L10 2.586A2 2 0 008.586 2H4z"/></svg>
+                All Notes
             </button>
 
-            <div class="pt-3 pb-1 px-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
-                Folders
+            <div class="pt-4 pb-1.5 px-5 text-[10px] font-semibold uppercase tracking-widest text-ink-500">
+                Stacks
             </div>
 
-            <template x-for="folder in folders" :key="folder.id">
-                <button
-                    @click="openFolder(folder)"
-                    class="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-gray-100 text-gray-600 group"
-                >
-                    <span>📁</span>
-                    <span class="truncate flex-1 text-left" x-text="folder.name"></span>
-                    <span
-                        class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                        :class="folder.category === 'office' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'"
-                        x-text="folder.category"
-                    ></span>
-                </button>
-            </template>
+            <div x-html="renderTree(visibleTree())"></div>
 
-            <p x-show="!loading && folders.length === 0" class="px-3 text-sm text-gray-400">
-                No subfolders here.
+            <p x-show="folderTree.length === 0" class="px-5 text-sm text-ink-500">
+                No folders yet.
             </p>
         </nav>
-
-        <div class="p-3 border-t border-gray-200">
-            <button
-                @click="openFolderModal()"
-                class="w-full rounded-lg bg-gray-900 text-white text-sm font-medium py-2 hover:bg-gray-700 transition"
-            >
-                + New Folder
-            </button>
-        </div>
     </aside>
 
     <!-- Main -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="border-b border-gray-200 bg-white px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-1 text-sm text-gray-500 min-w-0">
-                <button @click="goRoot()" class="hover:text-gray-900 font-medium shrink-0">All Notes</button>
+    <main class="flex-1 flex flex-col overflow-hidden bg-ink-950">
+        <header class="border-b border-white/[0.06] px-8 py-4.5 flex items-center justify-between">
+            <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0">
+                <button @click="selectFolder(null)" class="hover:text-white transition-colors font-medium shrink-0">All Notes</button>
                 <template x-for="(crumb, index) in breadcrumbs" :key="crumb.id">
-                    <div class="flex items-center gap-1 min-w-0">
-                        <span class="shrink-0">/</span>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="shrink-0 text-ink-600">/</span>
                         <button
-                            @click="goToBreadcrumb(index)"
-                            class="hover:text-gray-900 truncate"
+                            @click="selectFolder(crumb.id)"
+                            class="hover:text-white transition-colors truncate"
                             x-text="crumb.name"
                         ></button>
                     </div>
                 </template>
             </div>
 
-            <button
-                @click="openNoteModal()"
-                class="shrink-0 rounded-lg bg-blue-600 text-white text-sm font-medium px-4 py-2 hover:bg-blue-700 transition"
-            >
-                + New Note
+            <button @click="openNoteModal()" class="btn-primary">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/></svg>
+                New Note
             </button>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-6">
-            <p x-show="loading" class="text-sm text-gray-400">Loading…</p>
+        <div class="flex-1 overflow-y-auto p-8">
+            <p x-show="loading" class="text-sm text-ink-500">Loading…</p>
+
+            <div x-show="!loading" class="flex flex-wrap items-center gap-2.5 mb-8">
+                <button
+                    @click="openNoteModal()"
+                    title="New note"
+                    class="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-b from-indigo-500 to-indigo-600 text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-indigo-400 hover:to-indigo-500 transition-all duration-150 active:scale-[0.95]"
+                >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 3a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5H6z"/>
+                        <path d="M13 3v5h5"/>
+                        <path d="M9.5 14h5M12 11.5v5"/>
+                    </svg>
+                </button>
+                <button
+                    @click="openFolderModal()"
+                    title="New folder"
+                    class="w-11 h-11 rounded-xl flex items-center justify-center bg-gradient-to-b from-amber-400 to-amber-500 text-ink-950 shadow-[0_1px_0_0_rgba(255,255,255,0.3)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-amber-300 hover:to-amber-400 transition-all duration-150 active:scale-[0.95]"
+                >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                        <path d="M12 11v4M10 13h4"/>
+                    </svg>
+                </button>
+
+                <div x-show="subfolders.length > 0" class="w-px h-7 bg-white/[0.06] mx-1"></div>
+
+                <template x-for="folder in subfolders" :key="folder.id">
+                    <button
+                        @click="selectFolder(folder.id)"
+                        class="flex items-center gap-2 rounded-xl border border-white/[0.06] bg-ink-850 hover:bg-ink-700 hover:border-white/10 px-4 py-2.5 text-sm text-ink-100 transition-all duration-150"
+                    >
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                        <span x-text="folder.name"></span>
+                    </button>
+                </template>
+            </div>
 
             <div
                 x-show="!loading"
                 class="grid gap-4"
-                style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));"
+                style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));"
             >
                 <template x-for="note in notes" :key="note.id">
-                    <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition flex flex-col gap-2">
-                        <div class="flex items-start justify-between gap-2">
-                            <h3 class="font-semibold text-sm leading-snug" x-text="note.title"></h3>
-                            <span
-                                class="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                                :class="note.category === 'office' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'"
-                                x-text="note.category"
-                            ></span>
-                        </div>
-                        <p class="text-sm text-gray-500 line-clamp-4 whitespace-pre-line" x-text="note.content"></p>
+                    <div
+                        class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover"
+                        :class="activeCategory === 'office' ? 'border-l-blue-500/60' : 'border-l-emerald-500/60'"
+                    >
+                        <h3 class="font-semibold text-sm leading-snug text-white tracking-tight" x-text="note.title"></h3>
+                        <p class="text-sm text-ink-400 line-clamp-4 whitespace-pre-line leading-relaxed" x-text="note.content"></p>
                     </div>
                 </template>
             </div>
 
-            <p x-show="!loading && notes.length === 0 && folders.length === 0" class="text-sm text-gray-400">
-                Nothing here yet. Create a note or a folder to get started.
-            </p>
+            <div x-show="!loading && notes.length === 0 && subfolders.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
+                <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
+                    <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><path d="M4 3a1 1 0 011-1h6l4 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1V3z"/><path d="M11 2v4h4"/></svg>
+                </div>
+                <p class="text-sm text-ink-500">Nothing here yet. Create a note or a folder to get started.</p>
+            </div>
         </div>
     </main>
 
@@ -121,51 +189,43 @@
     <div
         x-show="showNoteModal"
         x-cloak
-        class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
+        x-transition.opacity
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
         style="display: none;"
     >
-        <div @click.outside="showNoteModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-            <h2 class="text-lg font-semibold mb-4">New Note</h2>
+        <div
+            @click.outside="showNoteModal = false"
+            x-show="showNoteModal"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="card w-full max-w-md p-7 shadow-popover"
+        >
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-base font-semibold text-white tracking-tight">New Note</h2>
+                <span
+                    class="text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    :class="activeCategory === 'office' ? 'bg-blue-500/10 text-blue-400' : 'bg-emerald-500/10 text-emerald-400'"
+                    x-text="activeCategory === 'office' ? '💼 Work' : '🏠 Personal'"
+                ></span>
+            </div>
 
             <form @submit.prevent="submitNote()" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Title</label>
-                    <input
-                        type="text"
-                        x-model="noteForm.title"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                    <p class="text-xs text-red-600 mt-1" x-show="errors.title" x-text="errors.title?.[0]"></p>
+                    <label class="block text-xs font-medium mb-1.5 text-ink-400">Title</label>
+                    <input type="text" x-model="noteForm.title" class="input-field">
+                    <p class="text-xs text-red-400 mt-1.5" x-show="errors.title" x-text="errors.title?.[0]"></p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Content</label>
-                    <textarea
-                        x-model="noteForm.content"
-                        rows="4"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    ></textarea>
-                    <p class="text-xs text-red-600 mt-1" x-show="errors.content" x-text="errors.content?.[0]"></p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Category</label>
-                    <select
-                        x-model="noteForm.category"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="office">Office</option>
-                        <option value="personal">Personal</option>
-                    </select>
+                    <label class="block text-xs font-medium mb-1.5 text-ink-400">Content</label>
+                    <textarea x-model="noteForm.content" rows="4" class="input-field resize-none"></textarea>
+                    <p class="text-xs text-red-400 mt-1.5" x-show="errors.content" x-text="errors.content?.[0]"></p>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" @click="showNoteModal = false" class="text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100">
-                        Cancel
-                    </button>
-                    <button type="submit" class="text-sm font-medium px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
-                        Create
-                    </button>
+                    <button type="button" @click="showNoteModal = false" class="btn-ghost">Cancel</button>
+                    <button type="submit" class="btn-primary">Create</button>
                 </div>
             </form>
         </div>
@@ -175,41 +235,37 @@
     <div
         x-show="showFolderModal"
         x-cloak
-        class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
+        x-transition.opacity
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
         style="display: none;"
     >
-        <div @click.outside="showFolderModal = false" class="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
-            <h2 class="text-lg font-semibold mb-4">New Folder</h2>
+        <div
+            @click.outside="showFolderModal = false"
+            x-show="showFolderModal"
+            x-transition:enter="transition ease-out duration-150"
+            x-transition:enter-start="opacity-0 scale-95"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="card w-full max-w-md p-7 shadow-popover"
+        >
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-base font-semibold text-white tracking-tight">New Folder</h2>
+                <span
+                    class="text-[11px] font-semibold px-2.5 py-1 rounded-full"
+                    :class="activeCategory === 'office' ? 'bg-blue-500/10 text-blue-400' : 'bg-emerald-500/10 text-emerald-400'"
+                    x-text="activeCategory === 'office' ? '💼 Work' : '🏠 Personal'"
+                ></span>
+            </div>
 
             <form @submit.prevent="submitFolder()" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">Name</label>
-                    <input
-                        type="text"
-                        x-model="folderForm.name"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                    <p class="text-xs text-red-600 mt-1" x-show="errors.name" x-text="errors.name?.[0]"></p>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1">Category</label>
-                    <select
-                        x-model="folderForm.category"
-                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="office">Office</option>
-                        <option value="personal">Personal</option>
-                    </select>
+                    <label class="block text-xs font-medium mb-1.5 text-ink-400">Name</label>
+                    <input type="text" x-model="folderForm.name" class="input-field">
+                    <p class="text-xs text-red-400 mt-1.5" x-show="errors.name" x-text="errors.name?.[0]"></p>
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" @click="showFolderModal = false" class="text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-100">
-                        Cancel
-                    </button>
-                    <button type="submit" class="text-sm font-medium px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-gray-700">
-                        Create
-                    </button>
+                    <button type="button" @click="showFolderModal = false" class="btn-ghost">Cancel</button>
+                    <button type="submit" class="btn-secondary">Create</button>
                 </div>
             </form>
         </div>
@@ -219,62 +275,166 @@
 <script>
     function notesApp() {
         return {
-            currentFolderId: null,
+            activeCategory: localStorage.getItem('activeCategory') || 'office',
+            folderTree: [],
+            nodesById: {},
+            selectedFolderId: null,
             breadcrumbs: [],
-            folders: [],
+            subfolders: [],
             notes: [],
             loading: false,
+            search: '',
             showNoteModal: false,
             showFolderModal: false,
-            noteForm: { title: '', content: '', category: 'office' },
-            folderForm: { name: '', category: 'office' },
+            noteForm: { title: '', content: '' },
+            folderForm: { name: '' },
             errors: {},
 
             init() {
-                this.loadContents();
+                this.loadContent(null);
             },
 
-            async loadContents() {
-                this.loading = true;
+            escapeHtml(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            },
 
-                const query = this.currentFolderId ? `?folder_id=${this.currentFolderId}` : '';
+            toggleCategory() {
+                this.activeCategory = this.activeCategory === 'office' ? 'personal' : 'office';
+                localStorage.setItem('activeCategory', this.activeCategory);
+
+                this.folderTree = [];
+                this.nodesById = {};
+                this.loadContent(null);
+            },
+
+            makeNode(folder, parentId) {
+                const node = {
+                    id: folder.id,
+                    name: folder.name,
+                    parentId: parentId,
+                    children: null,
+                    expanded: false,
+                };
+                this.nodesById[folder.id] = node;
+                return node;
+            },
+
+            buildBreadcrumbs(id) {
+                const crumbs = [];
+                let current = id ? this.nodesById[id] : null;
+
+                while (current) {
+                    crumbs.unshift({ id: current.id, name: current.name });
+                    current = current.parentId ? this.nodesById[current.parentId] : null;
+                }
+
+                return crumbs;
+            },
+
+            visibleTree() {
+                if (!this.search) {
+                    return this.folderTree;
+                }
+
+                const term = this.search.toLowerCase();
+
+                return this.folderTree.filter((node) => node.name.toLowerCase().includes(term));
+            },
+
+            async loadContent(folderId) {
+                this.loading = true;
+                this.selectedFolderId = folderId;
+                this.breadcrumbs = this.buildBreadcrumbs(folderId);
+
+                const params = new URLSearchParams({ category: this.activeCategory });
+                if (folderId) {
+                    params.set('folder_id', folderId);
+                }
 
                 const [foldersRes, notesRes] = await Promise.all([
-                    fetch(`/api/folders${query}`),
-                    fetch(`/api/notes${query}`),
+                    fetch(`/api/folders?${params}`),
+                    fetch(`/api/notes?${params}`),
                 ]);
 
-                this.folders = await foldersRes.json();
-                this.notes = await notesRes.json();
+                const foldersData = await foldersRes.json();
+                const notesData = await notesRes.json();
+
+                const childNodes = foldersData.map((f) => this.makeNode(f, folderId));
+
+                if (folderId === null) {
+                    this.folderTree = childNodes;
+                } else {
+                    const parentNode = this.nodesById[folderId];
+                    if (parentNode) {
+                        parentNode.children = childNodes;
+                        parentNode.expanded = true;
+                    }
+                }
+
+                this.subfolders = childNodes;
+                this.notes = notesData;
                 this.loading = false;
             },
 
-            openFolder(folder) {
-                this.breadcrumbs.push({ id: folder.id, name: folder.name });
-                this.currentFolderId = folder.id;
-                this.loadContents();
+            selectFolder(id) {
+                this.loadContent(id);
             },
 
-            goToBreadcrumb(index) {
-                this.currentFolderId = this.breadcrumbs[index].id;
-                this.breadcrumbs = this.breadcrumbs.slice(0, index + 1);
-                this.loadContents();
+            async toggleFolder(id) {
+                const node = this.nodesById[id];
+                if (!node) {
+                    return;
+                }
+
+                if (node.children === null) {
+                    const params = new URLSearchParams({ category: this.activeCategory, folder_id: id });
+                    const res = await fetch(`/api/folders?${params}`);
+                    const data = await res.json();
+                    node.children = data.map((f) => this.makeNode(f, id));
+                }
+
+                node.expanded = !node.expanded;
             },
 
-            goRoot() {
-                this.currentFolderId = null;
-                this.breadcrumbs = [];
-                this.loadContents();
+            renderTree(nodes, depth = 0) {
+                return nodes.map((node) => {
+                    const isSelected = this.selectedFolderId === node.id;
+                    const rowClass = isSelected ? 'sidebar-item-active' : '';
+                    const chevronClass = node.expanded ? 'rotate-90' : '';
+
+                    let html = `
+                        <div>
+                            <div class="sidebar-item group cursor-pointer ${rowClass}"
+                                 style="padding-left: ${12 + depth * 14}px; padding-top: 7px; padding-bottom: 7px; padding-right: 10px; margin-left: 12px; margin-right: 12px; width: calc(100% - 24px);"
+                                 @click="selectFolder('${node.id}')">
+                                <button type="button" @click.stop="toggleFolder('${node.id}')"
+                                        class="w-3.5 h-3.5 flex items-center justify-center text-ink-500 hover:text-ink-100 shrink-0 transition-transform duration-150 ${chevronClass}">
+                                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 6l6 6-6 6"/></svg>
+                                </button>
+                                <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500 shrink-0"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                                <span class="truncate flex-1">${this.escapeHtml(node.name)}</span>
+                            </div>
+                            ${node.expanded && node.children ? `<div>${this.renderTree(node.children, depth + 1)}</div>` : ''}
+                        </div>
+                    `;
+
+                    return html;
+                }).join('');
             },
 
             openNoteModal() {
-                this.noteForm = { title: '', content: '', category: 'office' };
+                this.noteForm = { title: '', content: '' };
                 this.errors = {};
                 this.showNoteModal = true;
             },
 
             openFolderModal() {
-                this.folderForm = { name: '', category: 'office' };
+                this.folderForm = { name: '' };
                 this.errors = {};
                 this.showFolderModal = true;
             },
@@ -285,7 +445,11 @@
                 const response = await fetch('/api/notes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ ...this.noteForm, folder_id: this.currentFolderId }),
+                    body: JSON.stringify({
+                        ...this.noteForm,
+                        category: this.activeCategory,
+                        folder_id: this.selectedFolderId,
+                    }),
                 });
 
                 if (response.status === 422) {
@@ -305,7 +469,11 @@
                 const response = await fetch('/api/folders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ ...this.folderForm, folder_id: this.currentFolderId }),
+                    body: JSON.stringify({
+                        ...this.folderForm,
+                        category: this.activeCategory,
+                        folder_id: this.selectedFolderId,
+                    }),
                 });
 
                 if (response.status === 422) {
@@ -315,7 +483,22 @@
                 }
 
                 const folder = await response.json();
-                this.folders.push(folder);
+                const node = this.makeNode(folder, this.selectedFolderId);
+
+                if (this.selectedFolderId === null) {
+                    this.folderTree.push(node);
+                } else {
+                    const parent = this.nodesById[this.selectedFolderId];
+                    if (parent) {
+                        if (parent.children === null) {
+                            parent.children = [];
+                        }
+                        parent.children.push(node);
+                        parent.expanded = true;
+                    }
+                }
+
+                this.subfolders.push(node);
                 this.showFolderModal = false;
             },
         };

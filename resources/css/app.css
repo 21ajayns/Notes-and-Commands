@@ -1,3 +1,111 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        font-feature-settings: "cv11", "ss01";
+        -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-white/10 rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-white/20;
+    }
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center gap-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-150 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none select-none;
+    }
+
+    .btn-primary {
+        @apply btn bg-gradient-to-b from-indigo-500 to-indigo-600 text-white px-5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-indigo-400 hover:to-indigo-500;
+    }
+
+    .btn-secondary {
+        @apply btn bg-white/[0.06] text-ink-100 border border-white/10 px-5 py-2.5 hover:bg-white/[0.1];
+    }
+
+    .btn-ghost {
+        @apply btn text-ink-400 hover:bg-white/[0.06] hover:text-ink-100 px-3.5 py-2;
+    }
+
+    .input-field {
+        @apply w-full rounded-xl bg-white/[0.04] border border-white/10 px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-500 outline-none transition duration-150 focus:border-indigo-500/60 focus:ring-4 focus:ring-indigo-500/10;
+    }
+
+    .card {
+        @apply rounded-2xl bg-ink-850 border border-white/[0.06] shadow-card transition-all duration-150;
+    }
+
+    .flip-card {
+        perspective: 800px;
+    }
+
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+    }
+
+    .flip-card-flipped {
+        transform: rotateY(180deg);
+    }
+
+    .flip-face {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: white;
+        font-size: 0.875rem;
+    }
+
+    .flip-face-back {
+        transform: rotateY(180deg);
+    }
+
+    .pill {
+        @apply inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide;
+    }
+
+    .pill-office {
+        @apply pill bg-blue-500/10 text-blue-400 ring-1 ring-inset ring-blue-500/20;
+    }
+
+    .pill-personal {
+        @apply pill bg-emerald-500/10 text-emerald-400 ring-1 ring-inset ring-emerald-500/20;
+    }
+
+    .sidebar-item {
+        @apply flex items-center gap-2 rounded-lg text-[13px] font-medium text-ink-400 transition-colors duration-100 hover:bg-white/[0.05] hover:text-ink-100;
+    }
+
+    .sidebar-item-active {
+        @apply bg-white/[0.08] text-white;
+    }
+
+    .icon-chip {
+        @apply w-5 h-5 flex items-center justify-center rounded-md bg-white/[0.05] text-ink-400 shrink-0;
+    }
+}

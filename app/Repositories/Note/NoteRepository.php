@@ -48,4 +48,9 @@ class NoteRepository implements NoteRepositoryInterface
 
         return $note;
     }
+
+    public function delete(string $id): void
+    {
+        Note::query()->findOrFail($id)->delete();
+    }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('category');
-            $table->foreignUuid('folder_id')->nullable()->constrained(self::TABLE)->nullOnDelete();
+            $table->foreignUuid('folder_id')->nullable()->constrained(self::TABLE)->cascadeOnDelete();
             $table->timestamps();
         });
     }

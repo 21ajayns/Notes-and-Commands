@@ -176,4 +176,24 @@ class NoteRepositoryTest extends TestCase
 
         (new NoteRepository())->update('00000000-0000-0000-0000-000000000000', new NoteUpdateDto('Title', 'Content'));
     }
+
+    public function testDeleteRemovesTheNote(): void
+    {
+        $repository = new NoteRepository();
+
+        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+
+        $repository->delete($note->getAttribute('id'));
+
+        $this->assertDatabaseMissing('notes', [
+            'id' => $note->getAttribute('id'),
+        ]);
+    }
+
+    public function testDeleteThrowsWhenTheNoteDoesNotExist(): void
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+        (new NoteRepository())->delete('00000000-0000-0000-0000-000000000000');
+    }
 }

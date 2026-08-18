@@ -17,4 +17,6 @@ interface NoteRepositoryInterface
     public function find(string $id): Note;
 
     public function update(string $id, NoteUpdateDto $updateDto): Note;
+
+    public function delete(string $id): void;
 }

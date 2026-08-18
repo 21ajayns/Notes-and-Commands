@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Folder\FolderCreateController;
+use App\Http\Controllers\Folder\FolderDeleteController;
 use App\Http\Controllers\Folder\FolderGetController;
+use App\Http\Controllers\Folder\FolderUpdateController;
 use App\Http\Controllers\Note\NoteCreateController;
+use App\Http\Controllers\Note\NoteDeleteController;
 use App\Http\Controllers\Note\NoteGetController;
 use App\Http\Controllers\Note\NoteShowController;
 use App\Http\Controllers\Note\NoteUpdateController;
@@ -26,7 +29,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/folders', FolderCreateController::class);
 Route::get('/folders', FolderGetController::class);
+Route::put('/folders/{folder}', FolderUpdateController::class);
+Route::delete('/folders/{folder}', FolderDeleteController::class);
 Route::post('/notes', NoteCreateController::class);
 Route::get('/notes', NoteGetController::class);
 Route::get('/notes/{note}', NoteShowController::class);
 Route::put('/notes/{note}', NoteUpdateController::class);
+Route::delete('/notes/{note}', NoteDeleteController::class);

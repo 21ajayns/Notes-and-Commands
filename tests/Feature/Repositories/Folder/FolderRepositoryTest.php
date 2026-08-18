@@ -5,7 +5,10 @@ namespace Tests\Feature\Repositories\Folder;
 
 use App\Constants\CategoryEnum;
 use App\DataTransferObjects\Folder\FolderCreateDto;
+use App\DataTransferObjects\Folder\FolderUpdateDto;
+use App\DataTransferObjects\Note\NoteCreateDto;
 use App\Repositories\Folder\FolderRepository;
+use App\Repositories\Note\NoteRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -107,5 +110,89 @@ class FolderRepositoryTest extends TestCase
 
         $this->assertCount(1, $folders);
         $this->assertSame($work->getAttribute('id'), $folders->first()->getAttribute('id'));
+    }
+
+    public function testUpdatePersistsTheNewName(): void
+    {
+        $repository = new FolderRepository();
+
+        $folder = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+
+        $updated = $repository->update($folder->getAttribute('id'), new FolderUpdateDto('Work (renamed)'));
+
+        $this->assertSame('Work (renamed)', $updated->getAttribute('name'));
+
+        $this->assertDatabaseHas('folders', [
+            'id' => $folder->getAttribute('id'),
+            'name' => 'Work (renamed)',
+        ]);
+    }
+
+    public function testUpdateThrowsWhenTheFolderDoesNotExist(): void
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+        (new FolderRepository())->update('00000000-0000-0000-0000-000000000000', new FolderUpdateDto('Name'));
+    }
+
+    public function testDeleteRemovesTheFolder(): void
+    {
+        $repository = new FolderRepository();
+
+        $folder = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+
+        $repository->delete($folder->getAttribute('id'));
+
+        $this->assertDatabaseMissing('folders', [
+            'id' => $folder->getAttribute('id'),
+        ]);
+    }
+
+    public function testDeleteThrowsWhenTheFolderDoesNotExist(): void
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+        (new FolderRepository())->delete('00000000-0000-0000-0000-000000000000');
+    }
+
+    public function testDeletingAFolderCascadesToItsChildFolders(): void
+    {
+        $repository = new FolderRepository();
+
+        $parent = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $child = $repository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $grandchild = $repository->create(new FolderCreateDto('Sprint 1', CategoryEnum::OFFICE(), $child->getAttribute('id')));
+
+        $repository->delete($parent->getAttribute('id'));
+
+        $this->assertDatabaseMissing('folders', ['id' => $child->getAttribute('id')]);
+        $this->assertDatabaseMissing('folders', ['id' => $grandchild->getAttribute('id')]);
+    }
+
+    public function testDeletingAFolderCascadesToNotesInsideIt(): void
+    {
+        $folderRepository = new FolderRepository();
+        $noteRepository = new NoteRepository();
+
+        $folder = $folderRepository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $note = $noteRepository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
+
+        $folderRepository->delete($folder->getAttribute('id'));
+
+        $this->assertDatabaseMissing('notes', ['id' => $note->getAttribute('id')]);
+    }
+
+    public function testDeletingAFolderCascadesToNotesInsideNestedChildFolders(): void
+    {
+        $folderRepository = new FolderRepository();
+        $noteRepository = new NoteRepository();
+
+        $parent = $folderRepository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $child = $folderRepository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $note = $noteRepository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $child->getAttribute('id')));
+
+        $folderRepository->delete($parent->getAttribute('id'));
+
+        $this->assertDatabaseMissing('notes', ['id' => $note->getAttribute('id')]);
     }
 }

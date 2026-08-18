@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repositories\Folder;
 
 use App\DataTransferObjects\Folder\FolderCreateDto;
+use App\DataTransferObjects\Folder\FolderUpdateDto;
 use App\Models\Folder\Folder;
 use App\Repositories\Interfaces\Folder\FolderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,5 +29,21 @@ class FolderRepository implements FolderRepositoryInterface
             ->where('folder_id', $folderId)
             ->when($category !== null, fn ($query) => $query->where('category', $category))
             ->get();
+    }
+
+    public function update(string $id, FolderUpdateDto $updateDto): Folder
+    {
+        $folder = Folder::query()->findOrFail($id);
+
+        $folder->setAttribute('name', $updateDto->getName());
+
+        $folder->save();
+
+        return $folder;
+    }
+
+    public function delete(string $id): void
+    {
+        Folder::query()->findOrFail($id)->delete();
     }
 }

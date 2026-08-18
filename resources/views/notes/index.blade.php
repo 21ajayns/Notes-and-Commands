@@ -100,7 +100,32 @@
 
     <!-- Main -->
     <main class="flex-1 flex flex-col overflow-hidden bg-ink-950">
-        <header class="border-b border-white/[0.06] px-8 py-5 flex items-center justify-between">
+        <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
+            <div class="flex items-center gap-2.5 shrink-0" x-show="!selectedNote" x-cloak>
+                <button
+                    @click="startNewNote()"
+                    title="New note"
+                    class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
+                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 3a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5H6z"/>
+                        <path d="M13 3v5h5"/>
+                        <path d="M9.5 14h5M12 11.5v5"/>
+                    </svg>
+                </button>
+                <button
+                    @click="openFolderModal()"
+                    title="New folder"
+                    class="w-11 h-11 rounded-xl flex items-center justify-center bg-white/[0.04] border border-amber-500/25 text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/40 transition-all duration-150 active:scale-[0.95]"
+                >
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
+                        <path d="M12 11v4M10 13h4"/>
+                    </svg>
+                </button>
+            </div>
+
             <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0">
                 <button @click="selectFolder(null)" class="hover:text-white transition-colors font-medium shrink-0">All Notes</button>
                 <template x-for="(crumb, index) in breadcrumbs" :key="crumb.id">
@@ -127,55 +152,57 @@
                 <div>
                     <p x-show="loading" class="text-sm text-ink-500">Loading…</p>
 
-                    <div x-show="!loading" class="flex flex-wrap items-center gap-2.5 mb-8">
-                        <button
-                            @click="startNewNote()"
-                            title="New note"
-                            class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
-                            :class="activeCategory === 'office' ? 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
-                        >
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M6 3a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5H6z"/>
-                                <path d="M13 3v5h5"/>
-                                <path d="M9.5 14h5M12 11.5v5"/>
-                            </svg>
-                        </button>
-                        <button
-                            @click="openFolderModal()"
-                            title="New folder"
-                            class="w-11 h-11 rounded-xl flex items-center justify-center bg-white/[0.04] border border-amber-500/25 text-amber-400 hover:bg-amber-500/10 hover:border-amber-500/40 transition-all duration-150 active:scale-[0.95]"
-                        >
-                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
-                                <path d="M12 11v4M10 13h4"/>
-                            </svg>
-                        </button>
-                    </div>
-
                     <div
                         x-show="!loading"
                         class="grid gap-4"
                         style="grid-template-columns: repeat(3, 1fr);"
                     >
                         <template x-for="folder in subfolders" :key="folder.id">
-                            <button
+                            <div
                                 @click="selectFolder(folder.id)"
-                                class="rounded-2xl border-2 border-dashed border-white/15 hover:border-amber-500/40 hover:bg-amber-500/[0.04] p-5 flex flex-col gap-2.5 text-left transition-all duration-150"
+                                class="rounded-2xl border-2 border-dashed border-white/15 hover:border-amber-500/40 hover:bg-amber-500/[0.04] p-5 flex flex-col gap-2.5 transition-all duration-150 relative group cursor-pointer"
                             >
+                                <div class="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
+                                    <button
+                                        @click.stop="openRenameFolderModal(folder)"
+                                        title="Rename folder"
+                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-amber-400 hover:bg-amber-500/10"
+                                    >
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M13.5 2.5a1.5 1.5 0 012.121 2.121l-8.5 8.5-2.828.707.707-2.828 8.5-8.5z"/></svg>
+                                    </button>
+                                    <button
+                                        @click.stop="deleteFolder(folder)"
+                                        title="Delete folder"
+                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10"
+                                    >
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                                        </svg>
+                                    </button>
+                                </div>
                                 <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" class="text-amber-400/80"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight" x-text="folder.name"></h3>
-                            </button>
+                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-12" x-text="folder.name"></h3>
+                            </div>
                         </template>
 
                         <template x-for="note in notes" :key="note.id">
-                            <button
+                            <div
                                 @click="viewNote(note)"
-                                class="card p-5 flex flex-col gap-2.5 text-left border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover"
+                                class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover relative group cursor-pointer"
                                 :class="activeCategory === 'office' ? 'border-l-blue-500/60' : 'border-l-emerald-500/60'"
                             >
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight" x-text="note.title"></h3>
+                                <button
+                                    @click.stop="deleteNote(note)"
+                                    title="Delete note"
+                                    class="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                                    </svg>
+                                </button>
+                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-6" x-text="note.title"></h3>
                                 <p class="text-sm text-ink-400 line-clamp-4 whitespace-pre-line leading-relaxed" x-text="note.content"></p>
-                            </button>
+                            </div>
                         </template>
                     </div>
 
@@ -201,10 +228,16 @@
                             <h1 class="text-2xl font-bold text-white tracking-tight mb-5" x-text="selectedNote.title"></h1>
                             <p class="text-sm text-ink-300 whitespace-pre-line leading-relaxed" x-text="selectedNote.content"></p>
 
-                            <div class="mt-10">
+                            <div class="mt-10 flex items-center gap-2">
                                 <button @click="startEditNote()" class="btn-secondary">
                                     <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M13.5 2.5a1.5 1.5 0 012.121 2.121l-8.5 8.5-2.828.707.707-2.828 8.5-8.5z"/></svg>
                                     Edit
+                                </button>
+                                <button @click="deleteNote(selectedNote)" class="btn-ghost text-red-400 hover:bg-red-500/10 hover:text-red-300">
+                                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                                    </svg>
+                                    Delete
                                 </button>
                             </div>
                         </div>
@@ -234,7 +267,11 @@
                             </div>
 
                             <div class="flex items-center gap-2 pt-2">
-                                <button type="submit" class="btn-primary">Save</button>
+                                <button
+                                    type="submit"
+                                    class="btn-primary"
+                                    :class="activeCategory === 'office' ? 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                                >Save</button>
                                 <button type="button" @click="cancelEditDetail()" class="btn-ghost">Cancel</button>
                             </div>
                         </form>
@@ -261,7 +298,7 @@
             class="card w-full max-w-md p-7 shadow-popover"
         >
             <div class="flex items-center justify-between mb-5">
-                <h2 class="text-base font-semibold text-white tracking-tight">New Folder</h2>
+                <h2 class="text-base font-semibold text-white tracking-tight" x-text="renamingFolderId ? 'Rename Folder' : 'New Folder'"></h2>
                 <span
                     class="text-[11px] font-semibold px-2.5 py-1 rounded-full"
                     :class="activeCategory === 'office' ? 'bg-blue-500/10 text-blue-400' : 'bg-emerald-500/10 text-emerald-400'"
@@ -278,7 +315,7 @@
 
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" @click="showFolderModal = false" class="btn-ghost">Cancel</button>
-                    <button type="submit" class="btn-secondary">Create</button>
+                    <button type="submit" class="btn-secondary" x-text="renamingFolderId ? 'Save' : 'Create'"></button>
                 </div>
             </form>
         </div>
@@ -302,6 +339,7 @@
             loading: false,
             search: '',
             showFolderModal: false,
+            renamingFolderId: null,
             folderForm: { name: '' },
             errors: {},
 
@@ -410,6 +448,21 @@
                 this.isNewNote = false;
             },
 
+            async deleteNote(note) {
+                if (!confirm(`Delete "${note.title || 'this note'}"? This cannot be undone.`)) {
+                    return;
+                }
+
+                await fetch(`/api/notes/${note.id}`, { method: 'DELETE' });
+
+                this.notes = this.notes.filter((n) => n.id !== note.id);
+
+                if (this.selectedNote && this.selectedNote.id === note.id) {
+                    this.selectedNote = null;
+                    this.isEditingDetail = false;
+                }
+            },
+
             async toggleFolder(id) {
                 const node = this.nodesById[id];
                 if (!node) {
@@ -443,6 +496,18 @@
                                 </button>
                                 <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500 shrink-0"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
                                 <span class="truncate flex-1">${this.escapeHtml(node.name)}</span>
+                                <div class="hidden group-hover:flex items-center gap-0.5 shrink-0">
+                                    <button type="button" @click.stop="openRenameFolderModal(nodesById['${node.id}'])"
+                                            title="Rename folder"
+                                            class="w-5 h-5 rounded-md flex items-center justify-center text-ink-500 hover:text-amber-400 hover:bg-amber-500/10">
+                                        <svg width="10" height="10" viewBox="0 0 20 20" fill="currentColor"><path d="M13.5 2.5a1.5 1.5 0 012.121 2.121l-8.5 8.5-2.828.707.707-2.828 8.5-8.5z"/></svg>
+                                    </button>
+                                    <button type="button" @click.stop="deleteFolder(nodesById['${node.id}'])"
+                                            title="Delete folder"
+                                            class="w-5 h-5 rounded-md flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10">
+                                        <svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
+                                    </button>
+                                </div>
                             </div>
                             ${node.expanded && node.children ? `<div>${this.renderTree(node.children, depth + 1)}</div>` : ''}
                         </div>
@@ -516,13 +581,44 @@
             },
 
             openFolderModal() {
+                this.renamingFolderId = null;
                 this.folderForm = { name: '' };
+                this.errors = {};
+                this.showFolderModal = true;
+            },
+
+            openRenameFolderModal(folder) {
+                this.renamingFolderId = folder.id;
+                this.folderForm = { name: folder.name };
                 this.errors = {};
                 this.showFolderModal = true;
             },
 
             async submitFolder() {
                 this.errors = {};
+
+                if (this.renamingFolderId) {
+                    const response = await fetch(`/api/folders/${this.renamingFolderId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify({ name: this.folderForm.name }),
+                    });
+
+                    if (response.status === 422) {
+                        const errorBody = await response.json();
+                        this.errors = errorBody.errors ?? {};
+                        return;
+                    }
+
+                    const updated = await response.json();
+                    const node = this.nodesById[updated.id];
+                    if (node) {
+                        node.name = updated.name;
+                    }
+
+                    this.showFolderModal = false;
+                    return;
+                }
 
                 const response = await fetch('/api/folders', {
                     method: 'POST',
@@ -558,6 +654,49 @@
 
                 this.subfolders.push(node);
                 this.showFolderModal = false;
+            },
+
+            folderContainsCurrentView(folder) {
+                if (this.selectedFolderId === folder.id) {
+                    return true;
+                }
+
+                let current = this.selectedFolderId ? this.nodesById[this.selectedFolderId] : null;
+
+                while (current) {
+                    if (current.parentId === folder.id) {
+                        return true;
+                    }
+                    current = current.parentId ? this.nodesById[current.parentId] : null;
+                }
+
+                return false;
+            },
+
+            async deleteFolder(folder) {
+                if (!confirm(`Delete "${folder.name}" and everything inside it? This cannot be undone.`)) {
+                    return;
+                }
+
+                await fetch(`/api/folders/${folder.id}`, { method: 'DELETE' });
+
+                const shouldNavigateAway = this.folderContainsCurrentView(folder);
+
+                this.folderTree = this.folderTree.filter((n) => n.id !== folder.id);
+                this.subfolders = this.subfolders.filter((n) => n.id !== folder.id);
+
+                if (folder.parentId) {
+                    const parent = this.nodesById[folder.parentId];
+                    if (parent && parent.children) {
+                        parent.children = parent.children.filter((n) => n.id !== folder.id);
+                    }
+                }
+
+                delete this.nodesById[folder.id];
+
+                if (shouldNavigateAway) {
+                    this.selectFolder(folder.parentId ?? null);
+                }
             },
         };
     }

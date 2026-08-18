@@ -6,6 +6,7 @@ namespace Tests\Feature\Repositories\Note;
 use App\Constants\CategoryEnum;
 use App\DataTransferObjects\Folder\FolderCreateDto;
 use App\DataTransferObjects\Note\NoteCreateDto;
+use App\DataTransferObjects\Note\NoteUpdateDto;
 use App\Repositories\Folder\FolderRepository;
 use App\Repositories\Note\NoteRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -130,5 +131,49 @@ class NoteRepositoryTest extends TestCase
 
         $this->assertCount(1, $notes);
         $this->assertSame($office->getAttribute('id'), $notes->first()->getAttribute('id'));
+    }
+
+    public function testFindReturnsTheMatchingNote(): void
+    {
+        $repository = new NoteRepository();
+
+        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+
+        $found = $repository->find($note->getAttribute('id'));
+
+        $this->assertSame($note->getAttribute('id'), $found->getAttribute('id'));
+        $this->assertSame('Standup notes', $found->getAttribute('title'));
+    }
+
+    public function testFindThrowsWhenTheNoteDoesNotExist(): void
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+        (new NoteRepository())->find('00000000-0000-0000-0000-000000000000');
+    }
+
+    public function testUpdatePersistsTheNewTitleAndContent(): void
+    {
+        $repository = new NoteRepository();
+
+        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+
+        $updated = $repository->update($note->getAttribute('id'), new NoteUpdateDto('Standup notes (revised)', 'Discussed roadmap for Q4'));
+
+        $this->assertSame('Standup notes (revised)', $updated->getAttribute('title'));
+        $this->assertSame('Discussed roadmap for Q4', $updated->getAttribute('content'));
+
+        $this->assertDatabaseHas('notes', [
+            'id' => $note->getAttribute('id'),
+            'title' => 'Standup notes (revised)',
+            'content' => 'Discussed roadmap for Q4',
+        ]);
+    }
+
+    public function testUpdateThrowsWhenTheNoteDoesNotExist(): void
+    {
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+
+        (new NoteRepository())->update('00000000-0000-0000-0000-000000000000', new NoteUpdateDto('Title', 'Content'));
     }
 }

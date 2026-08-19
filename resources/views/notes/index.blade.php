@@ -3,10 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Notes</title>
+    <title>TLC</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-ink-950 text-ink-100 antialiased font-sans text-sm">
@@ -16,10 +20,29 @@
     x-init="init()"
     class="flex h-screen overflow-hidden"
 >
+    <!-- Splash intro -->
+    <div
+        x-show="showSplash"
+        x-transition:leave="transition-transform duration-700 ease-in-out"
+        x-transition:leave-end="-translate-y-full"
+        @click="showSplash = false"
+        @keydown.window="showSplash = false"
+        class="fixed inset-0 z-[100] flex flex-col items-center justify-center cursor-pointer select-none"
+        style="background: radial-gradient(circle at 50% 42%, #1b1b3a 0%, #0a0a0c 65%);"
+    >
+        <img src="/images/logo.png" alt="TLC" class="w-40 sm:w-56 h-auto object-contain drop-shadow-2xl animate-pulse">
+        <div class="mt-10 flex flex-col items-center gap-2 text-ink-500">
+            <span class="text-xs font-semibold uppercase tracking-[0.2em]">Press anywhere to continue</span>
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
+                <path d="M5 8l5 5 5-5"/>
+            </svg>
+        </div>
+    </div>
+
     <!-- Icon rail -->
     <div class="w-16 shrink-0 bg-ink-950 border-r border-white/[0.06] flex flex-col items-center py-4 gap-3">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center text-xs font-bold text-white shadow-card">
-            N
+        <div class="w-9 h-9 flex items-center justify-center">
+            <img src="/images/logo.png" alt="TLC" class="w-full h-full object-contain">
         </div>
 
         <div class="w-8 border-t border-white/[0.06]"></div>
@@ -49,11 +72,11 @@
                 class="flip-card w-full h-12 block"
             >
                 <div class="flip-card-inner" :class="activeCategory === 'personal' ? 'flip-card-flipped' : ''">
-                    <div class="flip-face flip-face-front bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card">
-                        <span class="text-base">💼</span> Work
+                    <div class="flip-face flip-face-front bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                        Work
                     </div>
-                    <div class="flip-face flip-face-back bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card">
-                        <span class="text-base">🏠</span> Personal
+                    <div class="flip-face flip-face-back bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                        Personal
                     </div>
                 </div>
             </button>
@@ -325,6 +348,7 @@
 <script>
     function notesApp() {
         return {
+            showSplash: true,
             activeCategory: localStorage.getItem('activeCategory') || 'office',
             folderTree: [],
             nodesById: {},

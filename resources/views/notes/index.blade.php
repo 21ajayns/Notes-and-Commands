@@ -50,16 +50,19 @@
         <div class="w-8 border-t border-white/[0.06]"></div>
 
         <button
-            class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/[0.08] text-white transition-all"
+            @click="switchApp('notes')"
+            class="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+            :class="activeApp === 'notes' ? 'bg-white/[0.08] text-white' : 'text-ink-500 hover:bg-white/[0.05] hover:text-ink-200'"
             title="Notes"
         >
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 3a1 1 0 011-1h6l4 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1V3z"/><path d="M11 2v4h4"/></svg>
         </button>
 
         <button
-            class="w-10 h-10 rounded-xl flex items-center justify-center text-ink-500 opacity-40 cursor-not-allowed transition-all"
-            title="Todo — coming soon"
-            disabled
+            @click="switchApp('task')"
+            class="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+            :class="activeApp === 'task' ? 'bg-white/[0.08] text-white' : 'text-ink-500 hover:bg-white/[0.05] hover:text-ink-200'"
+            title="Tasks"
         >
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -84,47 +87,74 @@
             </button>
         </div>
 
-        <div class="px-4 pt-3">
-            <div class="relative">
-                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500">
-                    <circle cx="9" cy="9" r="6.5"/><path d="M18 18l-4-4" stroke-linecap="round"/>
-                </svg>
-                <input
-                    type="text"
-                    x-model="search"
-                    placeholder="Search folders…"
-                    class="input-field pl-9"
-                >
+        <template x-if="activeApp === 'notes'">
+            <div class="flex flex-col flex-1 overflow-hidden">
+                <div class="px-4 pt-3">
+                    <div class="relative">
+                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-500">
+                            <circle cx="9" cy="9" r="6.5"/><path d="M18 18l-4-4" stroke-linecap="round"/>
+                        </svg>
+                        <input
+                            type="text"
+                            x-model="search"
+                            placeholder="Search folders…"
+                            class="input-field pl-9"
+                        >
+                    </div>
+                </div>
+
+                <div class="mx-4 mt-3 border-t border-white/[0.06]"></div>
+
+                <nav class="flex-1 overflow-y-auto py-3">
+                    <button
+                        @click="selectFolder(null)"
+                        class="sidebar-item mx-3 px-2.5 py-2"
+                        style="width: calc(100% - 24px)"
+                        :class="selectedFolderId === null ? 'sidebar-item-active' : ''"
+                    >
+                        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500 shrink-0"><path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0013.414 6L10 2.586A2 2 0 008.586 2H4z"/></svg>
+                        All Notes
+                    </button>
+
+                    <div class="pt-4 pb-1.5 px-5 text-[10px] font-semibold uppercase tracking-widest text-ink-500">
+                        Stacks
+                    </div>
+
+                    <div x-html="renderTree(visibleTree())"></div>
+
+                    <p x-show="folderTree.length === 0" class="px-5 text-sm text-ink-500">
+                        No folders yet.
+                    </p>
+                </nav>
             </div>
-        </div>
+        </template>
 
-        <div class="mx-4 mt-3 border-t border-white/[0.06]"></div>
+        <template x-if="activeApp === 'task'">
+            <div class="flex flex-col flex-1 overflow-hidden">
+                <div class="mx-4 mt-4 border-t border-white/[0.06]"></div>
 
-        <nav class="flex-1 overflow-y-auto py-3">
-            <button
-                @click="selectFolder(null)"
-                class="sidebar-item mx-3 px-2.5 py-2"
-                style="width: calc(100% - 24px)"
-                :class="selectedFolderId === null ? 'sidebar-item-active' : ''"
-            >
-                <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor" class="text-ink-500 shrink-0"><path d="M4 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0013.414 6L10 2.586A2 2 0 008.586 2H4z"/></svg>
-                All Notes
-            </button>
+                <nav class="flex-1 overflow-y-auto py-3">
+                    <div class="pb-1.5 px-5 text-[10px] font-semibold uppercase tracking-widest text-ink-500">
+                        Filter
+                    </div>
 
-            <div class="pt-4 pb-1.5 px-5 text-[10px] font-semibold uppercase tracking-widest text-ink-500">
-                Stacks
+                    <template x-for="filter in [{key: null, label: 'All'}, {key: 'active', label: 'Active'}, {key: 'upcoming', label: 'Upcoming'}, {key: 'completed', label: 'Completed'}]" :key="filter.label">
+                        <button
+                            @click="filterTasks(filter.key)"
+                            class="sidebar-item mx-3 px-2.5 py-2"
+                            style="width: calc(100% - 24px)"
+                            :class="taskStatusFilter === filter.key ? 'sidebar-item-active' : ''"
+                        >
+                            <span x-text="filter.label"></span>
+                        </button>
+                    </template>
+                </nav>
             </div>
-
-            <div x-html="renderTree(visibleTree())"></div>
-
-            <p x-show="folderTree.length === 0" class="px-5 text-sm text-ink-500">
-                No folders yet.
-            </p>
-        </nav>
+        </template>
     </aside>
 
-    <!-- Main -->
-    <main class="flex-1 flex flex-col overflow-hidden bg-ink-950">
+    <!-- Main: Notes -->
+    <main x-show="activeApp === 'notes'" x-cloak class="flex-1 flex flex-col overflow-hidden bg-ink-950">
         <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
             <div class="flex items-center gap-2.5 shrink-0" x-show="!selectedNote" x-cloak>
                 <button
@@ -306,6 +336,86 @@
         </div>
     </main>
 
+    <!-- Main: Tasks -->
+    <main x-show="activeApp === 'task'" x-cloak class="flex-1 flex flex-col overflow-hidden bg-ink-950">
+        <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
+            <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0">
+                <span class="text-white font-medium">Tasks</span>
+                <span class="text-ink-600">/</span>
+                <span x-text="taskStatusFilter ? taskStatusFilter.charAt(0).toUpperCase() + taskStatusFilter.slice(1) : 'All'"></span>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            <form @submit.prevent="addTask()" class="mb-6 flex items-center gap-3 max-w-2xl">
+                <input
+                    type="text"
+                    x-model="taskForm.title"
+                    placeholder="Add a task and press Enter…"
+                    class="input-field"
+                >
+                <button
+                    type="submit"
+                    class="btn-primary shrink-0"
+                    :class="activeCategory === 'office' ? 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                >Add</button>
+            </form>
+
+            <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
+
+            <div x-show="!taskLoading" class="flex flex-col gap-2.5 max-w-2xl">
+                <template x-for="task in sortedTasks()" :key="task.id">
+                    <div
+                        class="card p-4 flex items-center gap-3 border-l-[3px] transition-all duration-200"
+                        :class="task.status === 'completed'
+                            ? 'opacity-40 border-l-white/10'
+                            : task.status === 'upcoming'
+                                ? 'border-l-amber-500/60 bg-[#241d10]'
+                                : (activeCategory === 'office' ? 'border-l-blue-500/60 bg-[#141b2e]' : 'border-l-emerald-500/60 bg-[#0f231d]')"
+                    >
+                        <button
+                            @click="toggleTaskCompleted(task)"
+                            title="Mark complete"
+                            class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150"
+                            :class="task.status === 'completed' ? 'bg-emerald-500 border-emerald-500' : 'border-white/20 hover:border-white/40'"
+                        >
+                            <svg x-show="task.status === 'completed'" width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
+                        </button>
+
+                        <span
+                            class="flex-1 text-sm"
+                            :class="task.status === 'completed' ? 'line-through text-ink-500' : 'text-white'"
+                            x-text="task.title"
+                        ></span>
+
+                        <button
+                            x-show="task.status !== 'completed'"
+                            @click="toggleTaskUpcoming(task)"
+                            class="text-[10px] font-semibold px-2.5 py-1 rounded-full shrink-0 transition-all"
+                            :class="task.status === 'upcoming' ? 'bg-amber-500/10 text-amber-400' : 'bg-white/[0.06] text-ink-400 hover:bg-white/[0.1]'"
+                            x-text="task.status === 'upcoming' ? 'Upcoming' : 'Active'"
+                        ></button>
+
+                        <button
+                            @click="deleteTask(task)"
+                            title="Delete task"
+                            class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10 transition-all shrink-0"
+                        >
+                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
+                        </button>
+                    </div>
+                </template>
+
+                <div x-show="!taskLoading && tasks.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
+                        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <p class="text-sm text-ink-500">No tasks here yet. Add one above to get started.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <!-- New Folder Modal -->
     <div
         x-show="showFolderModal"
@@ -351,7 +461,12 @@
     function notesApp() {
         return {
             showSplash: true,
+            activeApp: 'notes',
             activeCategory: localStorage.getItem('activeCategory') || 'office',
+            tasks: [],
+            taskStatusFilter: null,
+            taskForm: { title: '' },
+            taskLoading: false,
             folderTree: [],
             nodesById: {},
             selectedFolderId: null,
@@ -386,9 +501,107 @@
                 this.activeCategory = this.activeCategory === 'office' ? 'personal' : 'office';
                 localStorage.setItem('activeCategory', this.activeCategory);
 
+                if (this.activeApp === 'task') {
+                    this.loadTasks();
+                    return;
+                }
+
                 this.folderTree = [];
                 this.nodesById = {};
                 this.loadContent(null);
+            },
+
+            switchApp(app) {
+                this.activeApp = app;
+
+                if (app === 'task') {
+                    this.loadTasks();
+                }
+            },
+
+            async loadTasks() {
+                this.taskLoading = true;
+
+                const params = new URLSearchParams({ category: this.activeCategory });
+                if (this.taskStatusFilter) {
+                    params.set('status', this.taskStatusFilter);
+                }
+
+                const res = await fetch(`/api/tasks?${params}`);
+                this.tasks = await res.json();
+                this.taskLoading = false;
+            },
+
+            filterTasks(status) {
+                this.taskStatusFilter = status;
+                this.loadTasks();
+            },
+
+            sortedTasks() {
+                const order = { active: 0, upcoming: 1, completed: 2 };
+
+                return [...this.tasks].sort((a, b) => order[a.status] - order[b.status]);
+            },
+
+            async addTask() {
+                const title = this.taskForm.title.trim();
+                if (!title) {
+                    return;
+                }
+
+                const response = await fetch('/api/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ title, category: this.activeCategory }),
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const task = await response.json();
+                this.taskForm.title = '';
+
+                if (!this.taskStatusFilter || this.taskStatusFilter === 'active') {
+                    this.tasks.push(task);
+                }
+            },
+
+            async updateTaskStatus(task, status) {
+                const response = await fetch(`/api/tasks/${task.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ status }),
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const updated = await response.json();
+                task.status = updated.status;
+
+                if (this.taskStatusFilter && this.taskStatusFilter !== updated.status) {
+                    this.tasks = this.tasks.filter((t) => t.id !== task.id);
+                }
+            },
+
+            toggleTaskCompleted(task) {
+                this.updateTaskStatus(task, task.status === 'completed' ? 'active' : 'completed');
+            },
+
+            toggleTaskUpcoming(task) {
+                this.updateTaskStatus(task, task.status === 'upcoming' ? 'active' : 'upcoming');
+            },
+
+            async deleteTask(task) {
+                if (!confirm(`Delete "${task.title}"?`)) {
+                    return;
+                }
+
+                await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' });
+
+                this.tasks = this.tasks.filter((t) => t.id !== task.id);
             },
 
             makeNode(folder, parentId) {

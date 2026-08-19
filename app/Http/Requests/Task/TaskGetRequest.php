@@ -1,0 +1,25 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Http\Requests\Task;
+
+use App\Constants\CategoryEnum;
+use App\Constants\TaskStatusEnum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class TaskGetRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'category' => ['nullable', 'string', Rule::in(CategoryEnum::toArray())],
+            'status' => ['nullable', 'string', Rule::in(TaskStatusEnum::toArray())],
+        ];
+    }
+}

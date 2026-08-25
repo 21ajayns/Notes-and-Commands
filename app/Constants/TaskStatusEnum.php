@@ -9,6 +9,7 @@ use MyCLabs\Enum\Enum;
  * @method static \App\Constants\TaskStatusEnum ACTIVE()
  * @method static \App\Constants\TaskStatusEnum UPCOMING()
  * @method static \App\Constants\TaskStatusEnum COMPLETED()
+ * @method static \App\Constants\TaskStatusEnum CRITICAL()
  */
 class TaskStatusEnum extends Enum
 {
@@ -17,4 +18,6 @@ class TaskStatusEnum extends Enum
     private const UPCOMING = 'upcoming';
 
     private const COMPLETED = 'completed';
+
+    private const CRITICAL = 'critical';
 }

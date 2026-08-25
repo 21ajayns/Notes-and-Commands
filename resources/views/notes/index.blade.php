@@ -138,7 +138,7 @@
                         Filter
                     </div>
 
-                    <template x-for="filter in [{key: null, label: 'All'}, {key: 'active', label: 'Active'}, {key: 'upcoming', label: 'Upcoming'}, {key: 'completed', label: 'Completed'}]" :key="filter.label">
+                    <template x-for="filter in [{key: null, label: 'All'}, {key: 'active', label: 'Active'}, {key: 'upcoming', label: 'Upcoming'}, {key: 'critical', label: 'Critical'}, {key: 'completed', label: 'Completed'}]" :key="filter.label">
                         <button
                             @click="filterTasks(filter.key)"
                             class="sidebar-item mx-3 px-2.5 py-2"
@@ -369,9 +369,11 @@
                         class="card p-4 flex items-center gap-3 border-l-[3px] transition-all duration-200"
                         :class="task.status === 'completed'
                             ? 'opacity-40 border-l-white/10'
-                            : task.status === 'upcoming'
-                                ? 'border-l-amber-500/60 bg-[#241d10]'
-                                : (activeCategory === 'office' ? 'border-l-blue-500/60 bg-[#141b2e]' : 'border-l-emerald-500/60 bg-[#0f231d]')"
+                            : task.status === 'critical'
+                                ? 'border-l-red-500/60 bg-[#2a1414]'
+                                : task.status === 'upcoming'
+                                    ? 'border-l-amber-500/60 bg-[#241d10]'
+                                    : (activeCategory === 'office' ? 'border-l-blue-500/60 bg-[#141b2e]' : 'border-l-emerald-500/60 bg-[#0f231d]')"
                     >
                         <button
                             @click="toggleTaskCompleted(task)"
@@ -388,13 +390,59 @@
                             x-text="task.title"
                         ></span>
 
-                        <button
+                        <div
                             x-show="task.status !== 'completed'"
-                            @click="toggleTaskUpcoming(task)"
-                            class="text-[10px] font-semibold px-2.5 py-1 rounded-full shrink-0 transition-all"
-                            :class="task.status === 'upcoming' ? 'bg-amber-500/10 text-amber-400' : 'bg-white/[0.06] text-ink-400 hover:bg-white/[0.1]'"
-                            x-text="task.status === 'upcoming' ? 'Upcoming' : 'Active'"
-                        ></button>
+                            x-data="{ open: false }"
+                            @click.outside="open = false"
+                            class="relative shrink-0"
+                        >
+                            <button
+                                type="button"
+                                @click="open = !open"
+                                class="flex items-center gap-1.5 text-[10px] font-semibold pl-2 pr-1.5 py-1 rounded-full transition-all duration-150 active:scale-[0.96]"
+                                :class="{
+                                    'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20': task.status === 'active',
+                                    'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20': task.status === 'upcoming',
+                                    'bg-red-500/10 text-red-400 hover:bg-red-500/20': task.status === 'critical',
+                                }"
+                            >
+                                <span
+                                    class="w-1.5 h-1.5 rounded-full shrink-0"
+                                    :class="{
+                                        'bg-blue-400': task.status === 'active',
+                                        'bg-amber-400 animate-pulse': task.status === 'upcoming',
+                                        'bg-red-400 animate-pulse': task.status === 'critical',
+                                    }"
+                                ></span>
+                                <span x-text="task.status.charAt(0).toUpperCase() + task.status.slice(1)"></span>
+                                <svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150" :class="open ? '-rotate-180' : ''"><path d="M5 8l5 5 5-5"/></svg>
+                            </button>
+
+                            <div
+                                x-show="open"
+                                x-cloak
+                                x-transition:enter="transition ease-out duration-100"
+                                x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute right-0 top-full mt-1.5 w-32 rounded-xl bg-ink-800 border border-white/[0.08] shadow-popover py-1 z-20"
+                            >
+                                <template x-for="option in [{key: 'active', label: 'Active', dot: 'bg-blue-400', text: 'text-blue-400'}, {key: 'upcoming', label: 'Upcoming', dot: 'bg-amber-400', text: 'text-amber-400'}, {key: 'critical', label: 'Critical', dot: 'bg-red-400', text: 'text-red-400'}]" :key="option.key">
+                                    <button
+                                        type="button"
+                                        @click="updateTaskStatus(task, option.key); open = false"
+                                        class="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors hover:bg-white/[0.06]"
+                                        :class="task.status === option.key ? option.text : 'text-ink-400'"
+                                    >
+                                        <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="option.dot"></span>
+                                        <span x-text="option.label"></span>
+                                        <svg x-show="task.status === option.key" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ml-auto"><path d="M4 10l4 4 8-8"/></svg>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
 
                         <button
                             @click="deleteTask(task)"
@@ -538,7 +586,7 @@
             },
 
             sortedTasks() {
-                const order = { active: 0, upcoming: 1, completed: 2 };
+                const order = { critical: 0, active: 1, upcoming: 2, completed: 3 };
 
                 return [...this.tasks].sort((a, b) => order[a.status] - order[b.status]);
             },
@@ -588,10 +636,6 @@
 
             toggleTaskCompleted(task) {
                 this.updateTaskStatus(task, task.status === 'completed' ? 'active' : 'completed');
-            },
-
-            toggleTaskUpcoming(task) {
-                this.updateTaskStatus(task, task.status === 'upcoming' ? 'active' : 'upcoming');
             },
 
             async deleteTask(task) {

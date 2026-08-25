@@ -1,0 +1,6 @@
+#!/bin/sh
+# Refreshes database/backups/backup.json (folders/notes/tasks snapshot) and
+# includes it in the commit, so every commit carries a data backup with it.
+
+php artisan data:backup || exit 1
+git add database/backups/backup.json

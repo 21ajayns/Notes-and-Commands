@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+    html,
+    body {
+        height: 100%;
+        overflow: hidden;
+    }
+
     body {
         font-feature-settings: "cv11", "ss01";
         -webkit-font-smoothing: antialiased;

@@ -9,6 +9,10 @@ use App\Http\Controllers\Note\NoteDeleteController;
 use App\Http\Controllers\Note\NoteGetController;
 use App\Http\Controllers\Note\NoteShowController;
 use App\Http\Controllers\Note\NoteUpdateController;
+use App\Http\Controllers\Task\TaskCreateController;
+use App\Http\Controllers\Task\TaskDeleteController;
+use App\Http\Controllers\Task\TaskGetController;
+use App\Http\Controllers\Task\TaskUpdateController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,3 +40,7 @@ Route::get('/notes', NoteGetController::class);
 Route::get('/notes/{note}', NoteShowController::class);
 Route::put('/notes/{note}', NoteUpdateController::class);
 Route::delete('/notes/{note}', NoteDeleteController::class);
+Route::post('/tasks', TaskCreateController::class);
+Route::get('/tasks', TaskGetController::class);
+Route::put('/tasks/{task}', TaskUpdateController::class);
+Route::delete('/tasks/{task}', TaskDeleteController::class);

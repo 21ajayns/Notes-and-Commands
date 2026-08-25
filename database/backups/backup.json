@@ -1,0 +1,73 @@
+{
+    "folders": [
+        {
+            "category": "office",
+            "created_at": "2026-08-20T04:45:57Z",
+            "folder_id": null,
+            "id": "90334a21-ac14-4a31-a797-3581b0a24773",
+            "name": "Backend",
+            "updated_at": "2026-08-20T04:45:57Z"
+        }
+    ],
+    "notes": [
+        {
+            "category": "office",
+            "content": "$pdf = new Fpdi();\n\nCreates a brand-new, empty PDF document. This is the output we're building — it starts with zero pages. Fpdi is special: it's a normal PDF-writing class (like FPDF) that's also able to read pages out of existing PDF files and reuse them as content.\n\n$pageCount = $pdf->setSourceFile(StreamReader::createByString($pdfContent));\n\nFor each invoice's raw bytes: StreamReader::createByString($pdfContent) wraps the byte string in an in-memory reader (so FPDI can parse it without writing it to a temp file on disk first). $pdf->setSourceFile(...) parses that PDF and returns how many pages it has ($pageCount).\n\nimportPage($pageNumber) parses that one page's content and hands back an internal template ID. This doesn't add anything to the output yet — it's just \"here's page 3 of invoice A, ready to be reused.\"\n\n- getTemplateSize($templateId) reads that page's actual width/height/orientation. This matters because not every invoice PDF is guaranteed to be identical page size — this keeps each page in the merged file at its own original dimensions instead of stretching/cropping.\n\n- AddPage($orientation, [$width, $height]) starts a new blank page in the output document, sized to match.\n\n- useTemplate($templateId) stamps that imported page's content onto the new blank page, full-bleed.",
+            "created_at": "2026-08-20T05:00:48Z",
+            "folder_id": "90334a21-ac14-4a31-a797-3581b0a24773",
+            "id": "aad9e2a8-c523-4c37-ae2b-7c4ea19aa5a8",
+            "title": "PDF Merger",
+            "updated_at": "2026-08-20T05:00:48Z"
+        }
+    ],
+    "tasks": [
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:29:33Z",
+            "id": "04da094a-6ce5-4b2d-8d1d-44ce9036456e",
+            "status": "critical",
+            "title": "Xero Checks and Replies",
+            "updated_at": "2026-08-25T04:29:36Z"
+        },
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:34:10Z",
+            "id": "4ede66d8-985e-4c8b-adcc-344a016288e6",
+            "status": "critical",
+            "title": "Pdf finalization, video record",
+            "updated_at": "2026-08-25T04:34:15Z"
+        },
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:33:38Z",
+            "id": "6f74d40f-233c-4722-932c-b65fa4722f51",
+            "status": "active",
+            "title": "Notifications list in app only important ones",
+            "updated_at": "2026-08-25T04:33:38Z"
+        },
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:29:13Z",
+            "id": "8600c01c-8267-4c22-a0f2-9e771e8c3aef",
+            "status": "critical",
+            "title": "Myob Pay run finalization",
+            "updated_at": "2026-08-25T04:29:18Z"
+        },
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:30:16Z",
+            "id": "f183b25f-329d-4fea-8836-1188789f0e03",
+            "status": "active",
+            "title": "Continue checkin progress",
+            "updated_at": "2026-08-25T04:33:46Z"
+        },
+        {
+            "category": "office",
+            "created_at": "2026-08-25T04:29:55Z",
+            "id": "f355d194-e9c8-477a-9105-1230ecea8c12",
+            "status": "upcoming",
+            "title": "Xero error message customizer",
+            "updated_at": "2026-08-25T04:33:47Z"
+        }
+    ]
+}

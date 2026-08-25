@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Repositories\Command\CommandRepository;
+use App\Repositories\CommandFolder\CommandFolderRepository;
 use App\Repositories\Folder\FolderRepository;
+use App\Repositories\Interfaces\Command\CommandRepositoryInterface;
+use App\Repositories\Interfaces\CommandFolder\CommandFolderRepositoryInterface;
 use App\Repositories\Interfaces\Folder\FolderRepositoryInterface;
 use App\Repositories\Interfaces\Note\NoteRepositoryInterface;
 use App\Repositories\Interfaces\Task\TaskRepositoryInterface;
@@ -20,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(NoteRepositoryInterface::class, NoteRepository::class);
         $this->app->bind(FolderRepositoryInterface::class, FolderRepository::class);
         $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
+        $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
+        $this->app->bind(CommandFolderRepositoryInterface::class, CommandFolderRepository::class);
     }
 
     /**

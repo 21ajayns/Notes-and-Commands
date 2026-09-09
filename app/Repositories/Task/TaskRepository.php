@@ -53,4 +53,11 @@ class TaskRepository implements TaskRepositoryInterface
     {
         Task::query()->findOrFail($id)->delete();
     }
+
+    public function deleteAll(?string $category = null): void
+    {
+        Task::query()
+            ->when($category !== null, fn ($query) => $query->where('category', $category))
+            ->delete();
+    }
 }

@@ -86,10 +86,10 @@
                 class="flip-card w-full h-12 block"
             >
                 <div class="flip-card-inner" :class="activeCategory === 'personal' ? 'flip-card-flipped' : ''">
-                    <div class="flip-face flip-face-front bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                    <div class="flip-face flip-face-front bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
                         Work
                     </div>
-                    <div class="flip-face flip-face-back bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                    <div class="flip-face flip-face-back bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
                         Personal
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                     @click="startNewNote()"
                     title="New note"
                     class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
-                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
                 >
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M6 3a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5H6z"/>
@@ -295,7 +295,7 @@
                             <div
                                 @click="viewNote(note)"
                                 class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover relative group cursor-pointer"
-                                :class="activeCategory === 'office' ? 'border-l-blue-500/60' : 'border-l-emerald-500/60'"
+                                :class="activeCategory === 'office' ? 'border-l-emerald-500/60' : 'border-l-blue-500/60'"
                             >
                                 <button
                                     @click.stop="deleteNote(note)"
@@ -376,7 +376,7 @@
                                 <button
                                     type="submit"
                                     class="btn-primary"
-                                    :class="activeCategory === 'office' ? 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
                                 >Save</button>
                                 <button type="button" @click="cancelEditDetail()" class="btn-ghost">Cancel</button>
                             </div>
@@ -395,7 +395,7 @@
                     @click="startNewCommand()"
                     title="New command set"
                     class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
-                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
                 >
                     <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6L3.5 10 7 14M13 6l3.5 4-3.5 4M11.5 4l-3 12"/></svg>
                 </button>
@@ -474,7 +474,7 @@
                             <div
                                 @click="viewCommand(cmd)"
                                 class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover relative group cursor-pointer"
-                                :class="activeCategory === 'office' ? 'border-l-blue-500/60' : 'border-l-emerald-500/60'"
+                                :class="activeCategory === 'office' ? 'border-l-emerald-500/60' : 'border-l-blue-500/60'"
                             >
                                 <button
                                     @click.stop="deleteCommand(cmd)"
@@ -592,7 +592,7 @@
                                 <button
                                     type="submit"
                                     class="btn-primary"
-                                    :class="activeCategory === 'office' ? 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
                                 >Save</button>
                                 <button type="button" @click="cancelEditCommandDetail()" class="btn-ghost">Cancel</button>
                             </div>
@@ -606,11 +606,22 @@
     <!-- Main: Tasks -->
     <main x-show="activeApp === 'task'" x-cloak class="flex-1 flex flex-col overflow-hidden bg-ink-950">
         <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
-            <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0">
+            <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0 flex-1">
                 <span class="text-white font-medium">Tasks</span>
                 <span class="text-ink-600">/</span>
                 <span x-text="taskStatusFilter ? taskStatusFilter.charAt(0).toUpperCase() + taskStatusFilter.slice(1) : 'All'"></span>
             </div>
+            <button
+                type="button"
+                @click="clearTasks()"
+                x-show="tasks.length > 0"
+                class="btn-ghost text-red-400 hover:bg-red-500/10 hover:text-red-300 shrink-0"
+            >
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                </svg>
+                Clear all
+            </button>
         </header>
 
         <div class="flex-1 overflow-y-auto p-8">
@@ -624,31 +635,31 @@
                 <button
                     type="submit"
                     class="btn-primary shrink-0"
-                    :class="activeCategory === 'office' ? 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500' : 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'"
+                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
                 >Add</button>
             </form>
 
             <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
 
-            <div x-show="!taskLoading" class="flex flex-col gap-2.5 max-w-2xl">
+            <div x-show="!taskLoading" class="flex flex-col gap-2 max-w-2xl">
                 <template x-for="task in sortedTasks()" :key="task.id">
                     <div
-                        class="card p-4 flex items-center gap-3 border-l-[3px] transition-all duration-200"
+                        class="card p-3 flex items-center gap-2.5 border-l-[3px] transition-all duration-200"
                         :class="task.status === 'completed'
                             ? 'opacity-40 border-l-white/10'
                             : task.status === 'critical'
                                 ? 'border-l-red-500/60 bg-[#2a1414]'
                                 : task.status === 'upcoming'
                                     ? 'border-l-amber-500/60 bg-[#241d10]'
-                                    : (activeCategory === 'office' ? 'border-l-blue-500/60 bg-[#141b2e]' : 'border-l-emerald-500/60 bg-[#0f231d]')"
+                                    : (activeCategory === 'office' ? 'border-l-emerald-500/60 bg-[#0f231d]' : 'border-l-blue-500/60 bg-[#141b2e]')"
                     >
                         <button
                             @click="toggleTaskCompleted(task)"
                             title="Mark complete"
-                            class="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150"
+                            class="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150"
                             :class="task.status === 'completed' ? 'bg-emerald-500 border-emerald-500' : 'border-white/20 hover:border-white/40'"
                         >
-                            <svg x-show="task.status === 'completed'" width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
+                            <svg x-show="task.status === 'completed'" width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
                         </button>
 
                         <span
@@ -751,7 +762,7 @@
                 <h2 class="text-base font-semibold text-white tracking-tight" x-text="renamingFolderId ? 'Rename Folder' : 'New Folder'"></h2>
                 <span
                     class="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                    :class="activeCategory === 'office' ? 'bg-blue-500/10 text-blue-400' : 'bg-emerald-500/10 text-emerald-400'"
+                    :class="activeCategory === 'office' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-blue-500/10 text-blue-400'"
                     x-text="activeCategory === 'office' ? '💼 Work' : '🏠 Personal'"
                 ></span>
             </div>
@@ -944,6 +955,17 @@
                 await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' });
 
                 this.tasks = this.tasks.filter((t) => t.id !== task.id);
+            },
+
+            async clearTasks() {
+                if (!confirm(`Delete all ${this.activeCategory} tasks? This cannot be undone.`)) {
+                    return;
+                }
+
+                const params = new URLSearchParams({ category: this.activeCategory });
+                await fetch(`/api/tasks/clear?${params}`, { method: 'DELETE' });
+
+                this.tasks = [];
             },
 
             makeNode(folder, parentId) {

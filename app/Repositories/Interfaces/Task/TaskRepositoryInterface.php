@@ -17,4 +17,6 @@ interface TaskRepositoryInterface
     public function update(string $id, TaskUpdateDto $updateDto): Task;
 
     public function delete(string $id): void;
+
+    public function deleteAll(?string $category = null): void;
 }

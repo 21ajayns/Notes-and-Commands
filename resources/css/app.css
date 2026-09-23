@@ -38,7 +38,7 @@
     }
 
     .btn-primary {
-        @apply btn bg-gradient-to-b from-indigo-500 to-indigo-600 text-white px-5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-indigo-400 hover:to-indigo-500;
+        @apply btn bg-gradient-to-b from-amber-600 to-amber-700 text-white px-5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-amber-500 hover:to-amber-600;
     }
 
     .btn-secondary {
@@ -50,7 +50,7 @@
     }
 
     .input-field {
-        @apply w-full rounded-xl bg-white/[0.04] border border-white/10 px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-500 outline-none transition duration-150 focus:border-indigo-500/60 focus:ring-4 focus:ring-indigo-500/10;
+        @apply w-full rounded-xl bg-white/[0.04] border border-white/10 px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-500 outline-none transition duration-150 focus:border-amber-600/60 focus:ring-4 focus:ring-amber-600/10;
     }
 
     .card {

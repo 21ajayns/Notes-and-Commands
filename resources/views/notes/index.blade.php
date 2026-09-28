@@ -480,16 +480,28 @@
                     <p x-show="loading" class="text-sm text-ink-500">Loading…</p>
 
                     <div
-                        x-show="!loading"
-                        class="grid gap-4"
-                        style="grid-template-columns: repeat(3, 1fr);"
+                        x-show="!loading && (subfolders.length > 0 || commands.length > 0)"
+                        class="max-w-5xl border border-white/[0.07]"
                     >
+                        <div class="cmd-list-row cmd-head">
+                            <span></span>
+                            <span>Name</span>
+                            <span>First command</span>
+                            <span class="text-right">Count</span>
+                            <span></span>
+                        </div>
+
                         <template x-for="folder in subfolders" :key="folder.id">
                             <div
                                 @click="selectFolder(folder.id)"
-                                class="tile-folder group"
+                                class="cmd-list-row group cursor-pointer"
+                                style="--c: rgba(245, 158, 11, 0.7)"
                             >
-                                <div class="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" class="text-amber-400/80"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                                <span class="text-sm font-semibold text-white truncate" :title="folder.name" x-text="folder.name"></span>
+                                <span class="text-xs text-ink-500">Folder</span>
+                                <span></span>
+                                <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                                     <button
                                         @click.stop="openRenameFolderModal(folder)"
                                         title="Rename folder"
@@ -507,33 +519,41 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" class="text-amber-400/80"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-12" x-text="folder.name"></h3>
                             </div>
                         </template>
 
                         <template x-for="cmd in commands" :key="cmd.id">
                             <div
                                 @click="viewCommand(cmd)"
-                                class="tile-note group"
+                                class="cmd-list-row group cursor-pointer"
+                                style="--c: rgba(162, 62, 76, 0.8)"
                             >
-                                <button
-                                    @click.stop="deleteCommand(cmd)"
-                                    title="Delete command set"
-                                    class="absolute top-3 right-3 tile-action opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
-                                    </svg>
-                                </button>
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-6" x-text="cmd.title"></h3>
-                                <p class="text-xs text-ink-500" x-text="cmd.rows.length + (cmd.rows.length === 1 ? ' command' : ' commands')"></p>
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-ink-500"><path d="M4 6l4 4-4 4M10 15h6"/></svg>
+                                <span class="text-sm font-semibold text-white truncate" :title="cmd.title" x-text="cmd.title"></span>
+                                <code
+                                    class="font-mono text-[12px] truncate"
+                                    :class="cmd.rows.length ? 'text-[#f3c98b]/80' : 'text-ink-500'"
+                                    :title="cmd.rows[0]?.value || ''"
+                                    x-text="cmd.rows[0]?.value || 'Empty'"
+                                ></code>
+                                <span class="font-mono text-[11px] text-ink-500 text-right" x-text="cmd.rows.length"></span>
+                                <div class="flex items-center justify-end opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                                    <button
+                                        @click.stop="deleteCommand(cmd)"
+                                        title="Delete command set"
+                                        class="tile-action hover:text-red-400 hover:bg-red-500/10"
+                                    >
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </template>
                     </div>
 
                     <div x-show="!loading && commands.length === 0 && subfolders.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
+                        <div class="w-14 h-14 bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
                             <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><path d="M7 6L3.5 10 7 14M13 6l3.5 4-3.5 4M11.5 4l-3 12"/></svg>
                         </div>
                         <p class="text-sm text-ink-500">Nothing here yet. Create a command set or a folder to get started.</p>
@@ -542,7 +562,7 @@
             </template>
 
             <template x-if="selectedCommand">
-                <div class="max-w-3xl">
+                <div class="max-w-5xl">
                     <button @click="selectedCommand = null; isEditingCommandDetail = false; isNewCommand = false;" class="flex items-center gap-1.5 text-sm text-ink-500 hover:text-white transition-colors mb-6">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
                         Back
@@ -553,24 +573,27 @@
                         <div>
                             <h1 class="text-2xl font-bold text-white tracking-tight mb-5" x-text="selectedCommand.title"></h1>
 
-                            <div class="rounded-2xl border border-white/[0.06] overflow-hidden">
+                            <div class="border border-white/[0.07]">
+                                <div x-show="selectedCommand.rows.length > 0" class="cmd-row cmd-head">
+                                    <span>#</span>
+                                    <span>What</span>
+                                    <span>Command</span>
+                                    <span></span>
+                                </div>
+
                                 <template x-for="(row, idx) in selectedCommand.rows" :key="idx">
-                                    <div
-                                        x-data="{ copied: false }"
-                                        class="flex items-center gap-4 px-5 py-3.5"
-                                        :class="idx % 2 === 0 ? 'bg-white/[0.02]' : ''"
-                                    >
-                                        <div class="flex-1 text-sm text-ink-300 min-w-0" x-text="row.label"></div>
+                                    <div x-data="{ copied: false }" class="cmd-row">
+                                        <span class="font-mono text-[11px] text-ink-500" x-text="String(idx + 1).padStart(2, '0')"></span>
+                                        <span class="text-sm text-white truncate" :title="row.label" x-text="row.label"></span>
+                                        <code class="font-mono text-[12.5px] text-[#f3c98b] truncate" :title="row.value" x-text="row.value"></code>
                                         <button
                                             type="button"
                                             @click="navigator.clipboard.writeText(row.value); copied = true; setTimeout(() => copied = false, 1500)"
-                                            class="shrink-0 flex items-center gap-2 rounded-lg bg-black/40 border border-white/10 pl-3 pr-2.5 py-1.5 font-mono text-xs text-emerald-300 hover:border-white/20 hover:bg-black/60 transition-all max-w-[60%]"
+                                            class="border py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
+                                            :class="copied ? 'border-emerald-400/50 text-emerald-400' : 'border-white/[0.16] text-ink-400 hover:text-white hover:bg-ink-800'"
                                             title="Copy to clipboard"
-                                        >
-                                            <span class="truncate" x-text="row.value"></span>
-                                            <svg x-show="!copied" width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-ink-400"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M4.5 13H4a1 1 0 01-1-1V4a1 1 0 011-1h8a1 1 0 011 1v.5"/></svg>
-                                            <svg x-cloak x-show="copied" width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-emerald-400"><path d="M4 10l4 4 8-8"/></svg>
-                                        </button>
+                                            x-text="copied ? 'Copied' : 'Copy'"
+                                        ></button>
                                     </div>
                                 </template>
 

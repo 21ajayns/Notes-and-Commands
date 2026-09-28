@@ -645,7 +645,12 @@
     </main>
 
     <!-- Main: Tasks -->
-    <main x-show="activeApp === 'task'" x-cloak class="flex-1 flex flex-col overflow-hidden bg-ink-950">
+    <main
+        x-show="activeApp === 'task'"
+        x-cloak
+        @keydown.window="if (activeApp === 'task' && $event.key.toLowerCase() === 'n' && !$event.ctrlKey && !$event.metaKey && !$event.altKey && !['INPUT', 'TEXTAREA', 'SELECT'].includes($event.target.tagName) && !$event.target.isContentEditable) { $event.preventDefault(); $refs.taskInput.focus(); }"
+        class="flex-1 flex flex-col overflow-hidden bg-ink-950"
+    >
         <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
             <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0 flex-1">
                 <span class="text-white font-medium">Tasks</span>
@@ -666,118 +671,132 @@
         </header>
 
         <div class="flex-1 overflow-y-auto p-8">
-            <form @submit.prevent="addTask()" class="mb-6 flex items-center gap-3 max-w-2xl">
-                <input
-                    type="text"
-                    x-model="taskForm.title"
-                    placeholder="Add a task and press Enter…"
-                    class="input-field"
-                >
-                <button
-                    type="submit"
-                    class="btn-primary shrink-0"
-                    :class="'from-[#A23E4C] to-[#8A2F3C] hover:from-[#B5505E] hover:to-[#9C3F4D]'"
-                >Add</button>
-            </form>
-
-            <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
-
-            <div x-show="!taskLoading" class="flex flex-col gap-2 max-w-2xl">
-                <template x-for="task in sortedTasks()" :key="task.id">
-                    <div
-                        class="card p-3 flex items-center gap-2.5 border-l-[3px] transition-all duration-200"
-                        :class="task.status === 'completed'
-                            ? 'opacity-40 border-l-white/10'
-                            : task.status === 'critical'
-                                ? 'border-l-red-500/60 bg-[#2a1414]'
-                                : task.status === 'upcoming'
-                                    ? 'border-l-amber-500/60 bg-[#241d10]'
-                                    : 'border-l-[#A23E4C]/60 bg-[#2b1518]'"
+            <div class="max-w-5xl flex flex-col gap-5">
+                <form @submit.prevent="addTask()" class="flex border border-white/[0.16] bg-ink-900 transition-colors focus-within:border-amber-600/60">
+                    <input
+                        type="text"
+                        x-ref="taskInput"
+                        x-model="taskForm.title"
+                        placeholder="Add a task and press Enter…"
+                        class="flex-1 min-w-0 bg-transparent px-4 py-3 text-sm text-ink-100 placeholder-ink-500 outline-none"
                     >
+                    <span class="flex items-center pr-3" title="Press N to add a task">
+                        <kbd class="ledger-kbd">N</kbd>
+                    </span>
+                    <button
+                        type="submit"
+                        class="px-6 text-sm font-semibold text-white bg-[#A23E4C] hover:bg-[#B5505E] transition-colors"
+                    >Add</button>
+                </form>
+
+                <div class="grid grid-cols-4 border border-white/[0.07]">
+                    <template x-for="status in taskStatuses" :key="status.key">
                         <button
-                            @click="toggleTaskCompleted(task)"
-                            title="Mark complete"
-                            class="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150"
-                            :class="task.status === 'completed' ? 'bg-emerald-500 border-emerald-500' : 'border-white/20 hover:border-white/40'"
+                            type="button"
+                            @click="filterTasks(taskStatusFilter === status.key ? null : status.key)"
+                            class="ledger-stat"
+                            :class="taskStatusFilter === status.key ? 'ledger-stat-active' : ''"
+                            :style="`--c: ${status.color}`"
                         >
-                            <svg x-show="task.status === 'completed'" width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
+                            <span class="text-[26px] font-bold leading-tight tabular-nums" :style="`color: ${status.color}`" x-text="taskCount(status.key)"></span>
+                            <span class="text-[11px] font-semibold uppercase tracking-widest text-ink-400" x-text="status.label"></span>
                         </button>
+                    </template>
+                </div>
 
-                        <span
-                            class="flex-1 text-sm"
-                            :class="task.status === 'completed' ? 'line-through text-ink-500' : 'text-white'"
-                            x-text="task.title"
-                        ></span>
+                <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
 
-                        <div
-                            x-show="task.status !== 'completed'"
-                            x-data="{ open: false }"
-                            @click.outside="open = false"
-                            class="relative shrink-0"
-                        >
+                <div x-show="!taskLoading && visibleTasks().length > 0" class="border border-white/[0.07]">
+                    <div class="ledger-row ledger-head">
+                        <span></span>
+                        <span>#</span>
+                        <span>Task</span>
+                        <span>Status</span>
+                        <span>Age</span>
+                        <span></span>
+                    </div>
+
+                    <template x-for="(task, index) in visibleTasks()" :key="task.id">
+                        <div class="ledger-row group" :style="`--c: ${taskStatusMeta(task.status).color}`">
                             <button
-                                type="button"
-                                @click="open = !open"
-                                class="flex items-center gap-1.5 text-[10px] font-semibold pl-2 pr-1.5 py-1 rounded-full transition-all duration-150 active:scale-[0.96]"
-                                :class="{
-                                    'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20': task.status === 'active',
-                                    'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20': task.status === 'upcoming',
-                                    'bg-red-500/10 text-red-400 hover:bg-red-500/20': task.status === 'critical',
-                                }"
+                                @click="toggleTaskCompleted(task)"
+                                :title="task.status === 'completed' ? 'Mark not done' : 'Mark done'"
+                                class="w-[18px] h-[18px] border-[1.5px] flex items-center justify-center transition-colors"
+                                :class="task.status === 'completed' ? 'bg-emerald-400 border-emerald-400' : 'border-white/25 hover:border-white/50'"
                             >
-                                <span
-                                    class="w-1.5 h-1.5 rounded-full shrink-0"
-                                    :class="{
-                                        'bg-blue-400': task.status === 'active',
-                                        'bg-amber-400 animate-pulse': task.status === 'upcoming',
-                                        'bg-red-400 animate-pulse': task.status === 'critical',
-                                    }"
-                                ></span>
-                                <span x-text="task.status.charAt(0).toUpperCase() + task.status.slice(1)"></span>
-                                <svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150" :class="open ? '-rotate-180' : ''"><path d="M5 8l5 5 5-5"/></svg>
+                                <svg x-show="task.status === 'completed'" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="#06281c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
                             </button>
 
-                            <div
-                                x-show="open"
-                                x-cloak
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
-                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute right-0 top-full mt-1.5 w-32 rounded-xl bg-ink-800 border border-white/[0.08] shadow-popover py-1 z-20"
-                            >
-                                <template x-for="option in [{key: 'active', label: 'Active', dot: 'bg-blue-400', text: 'text-blue-400'}, {key: 'upcoming', label: 'Upcoming', dot: 'bg-amber-400', text: 'text-amber-400'}, {key: 'critical', label: 'Critical', dot: 'bg-red-400', text: 'text-red-400'}]" :key="option.key">
-                                    <button
-                                        type="button"
-                                        @click="updateTaskStatus(task, option.key); open = false"
-                                        class="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors hover:bg-white/[0.06]"
-                                        :class="task.status === option.key ? option.text : 'text-ink-400'"
-                                    >
-                                        <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="option.dot"></span>
-                                        <span x-text="option.label"></span>
-                                        <svg x-show="task.status === option.key" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ml-auto"><path d="M4 10l4 4 8-8"/></svg>
-                                    </button>
-                                </template>
+                            <span class="font-mono text-[11px] text-ink-500" x-text="String(index + 1).padStart(2, '0')"></span>
+
+                            <span
+                                class="truncate text-sm"
+                                :class="task.status === 'completed' ? 'line-through text-ink-500' : 'text-white'"
+                                :title="task.title"
+                                x-text="task.title"
+                            ></span>
+
+                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                <button
+                                    type="button"
+                                    @click="open = !open"
+                                    class="inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors hover:bg-white/[0.04]"
+                                    :style="`color: ${taskStatusMeta(task.status).color}; border-color: ${taskStatusMeta(task.status).color}59`"
+                                >
+                                    <span class="w-1.5 h-1.5 shrink-0" :style="`background: ${taskStatusMeta(task.status).color}`"></span>
+                                    <span x-text="taskStatusMeta(task.status).label"></span>
+                                    <svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150" :class="open ? '-rotate-180' : ''"><path d="M5 8l5 5 5-5"/></svg>
+                                </button>
+
+                                <div
+                                    x-show="open"
+                                    x-cloak
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 -translate-y-1"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    class="absolute left-0 top-full mt-1 w-36 bg-ink-800 border border-white/[0.08] shadow-popover py-1 z-20"
+                                >
+                                    <template x-for="option in taskStatuses" :key="option.key">
+                                        <button
+                                            type="button"
+                                            @click="updateTaskStatus(task, option.key); open = false"
+                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors hover:bg-white/[0.06]"
+                                            :class="task.status === option.key ? '' : 'text-ink-400'"
+                                            :style="task.status === option.key ? `color: ${option.color}` : ''"
+                                        >
+                                            <span class="w-1.5 h-1.5 shrink-0" :style="`background: ${option.color}`"></span>
+                                            <span x-text="option.label"></span>
+                                            <svg x-show="task.status === option.key" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ml-auto"><path d="M4 10l4 4 8-8"/></svg>
+                                        </button>
+                                    </template>
+                                </div>
                             </div>
+
+                            <span
+                                class="font-mono text-[11px] text-ink-500"
+                                :title="task.created_at ? 'Added ' + new Date(task.created_at).toLocaleString() : ''"
+                                x-text="taskAge(task.created_at)"
+                            ></span>
+
+                            <button
+                                @click="deleteTask(task)"
+                                title="Delete task"
+                                class="w-7 h-7 flex items-center justify-center text-ink-500 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                            >
+                                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
+                            </button>
                         </div>
+                    </template>
+                </div>
 
-                        <button
-                            @click="deleteTask(task)"
-                            title="Delete task"
-                            class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10 transition-all shrink-0"
-                        >
-                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
-                        </button>
-                    </div>
-                </template>
-
-                <div x-show="!taskLoading && tasks.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
-                        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <p class="text-sm text-ink-500">No tasks here yet. Add one above to get started.</p>
+                <div x-show="!taskLoading && visibleTasks().length === 0" class="flex flex-col items-center justify-center py-20 text-center border border-dashed border-white/[0.1]">
+                    <p
+                        class="text-sm text-ink-500"
+                        x-text="taskStatusFilter ? 'No ' + taskStatusMeta(taskStatusFilter).label.toLowerCase() + ' tasks.' : 'No tasks here yet. Add one above to get started.'"
+                    ></p>
                 </div>
             </div>
         </div>
@@ -834,6 +853,12 @@
             taskStatusFilter: null,
             taskForm: { title: '' },
             taskLoading: false,
+            taskStatuses: [
+                { key: 'critical', label: 'Critical', color: '#ef4444' },
+                { key: 'active', label: 'Active', color: '#60a5fa' },
+                { key: 'upcoming', label: 'Upcoming', color: '#fbbf24' },
+                { key: 'completed', label: 'Completed', color: '#34d399' },
+            ],
             folderTree: [],
             nodesById: {},
             selectedFolderId: null,
@@ -921,9 +946,6 @@
                 this.taskLoading = true;
 
                 const params = new URLSearchParams({ category: this.activeCategory });
-                if (this.taskStatusFilter) {
-                    params.set('status', this.taskStatusFilter);
-                }
 
                 const res = await fetch(`/api/tasks?${params}`);
                 this.tasks = await res.json();
@@ -932,13 +954,36 @@
 
             filterTasks(status) {
                 this.taskStatusFilter = status;
-                this.loadTasks();
             },
 
-            sortedTasks() {
+            visibleTasks() {
                 const order = { critical: 0, active: 1, upcoming: 2, completed: 3 };
 
-                return [...this.tasks].sort((a, b) => order[a.status] - order[b.status]);
+                return this.tasks
+                    .filter((t) => !this.taskStatusFilter || t.status === this.taskStatusFilter)
+                    .sort((a, b) => order[a.status] - order[b.status]);
+            },
+
+            taskCount(status) {
+                return this.tasks.filter((t) => t.status === status).length;
+            },
+
+            taskStatusMeta(status) {
+                return this.taskStatuses.find((s) => s.key === status) || this.taskStatuses[1];
+            },
+
+            taskAge(date) {
+                if (!date) {
+                    return '';
+                }
+
+                const minutes = (Date.now() - new Date(date).getTime()) / 60000;
+
+                if (minutes < 60) return Math.max(1, Math.round(minutes)) + 'm';
+                if (minutes < 1440) return Math.round(minutes / 60) + 'h';
+                if (minutes < 43200) return Math.round(minutes / 1440) + 'd';
+
+                return Math.round(minutes / 43200) + 'mo';
             },
 
             async addTask() {
@@ -959,10 +1004,7 @@
 
                 const task = await response.json();
                 this.taskForm.title = '';
-
-                if (!this.taskStatusFilter || this.taskStatusFilter === 'active') {
-                    this.tasks.push(task);
-                }
+                this.tasks.push(task);
             },
 
             async updateTaskStatus(task, status) {
@@ -978,10 +1020,6 @@
 
                 const updated = await response.json();
                 task.status = updated.status;
-
-                if (this.taskStatusFilter && this.taskStatusFilter !== updated.status) {
-                    this.tasks = this.tasks.filter((t) => t.id !== task.id);
-                }
             },
 
             toggleTaskCompleted(task) {

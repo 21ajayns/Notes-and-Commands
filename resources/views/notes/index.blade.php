@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Cove</title>
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png?v=2">
+    <link rel="manifest" href="/manifest.json?v=2">
     <meta name="theme-color" content="#120e0a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +49,7 @@
                     </filter>
                 </defs>
                 <line x1="32" y1="10" x2="32" y2="3" stroke="url(#coveGradSplash)" stroke-width="2" stroke-linecap="round" filter="url(#coveGlowSplash)"/>
-                <path d="M43 13 A22 22 0 1 1 43 51" fill="none" stroke="url(#coveGradSplash)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowSplash)"/>
+                <path d="M43 13 A22 22 0 1 0 43 51" fill="none" stroke="url(#coveGradSplash)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowSplash)"/>
                 <circle cx="43" cy="13" r="3" fill="#E8A455" filter="url(#coveGlowSplash)"/>
                 <circle cx="43" cy="51" r="3" fill="#A23E4C" filter="url(#coveGlowSplash)"/>
             </svg>
@@ -84,7 +84,7 @@
                     </filter>
                 </defs>
                 <line x1="32" y1="10" x2="32" y2="3" stroke="url(#coveGradRail)" stroke-width="2" stroke-linecap="round" filter="url(#coveGlowRail)"/>
-                <path d="M43 13 A22 22 0 1 1 43 51" fill="none" stroke="url(#coveGradRail)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowRail)"/>
+                <path d="M43 13 A22 22 0 1 0 43 51" fill="none" stroke="url(#coveGradRail)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowRail)"/>
                 <circle cx="43" cy="13" r="3" fill="#E8A455" filter="url(#coveGlowRail)"/>
                 <circle cx="43" cy="51" r="3" fill="#A23E4C" filter="url(#coveGlowRail)"/>
             </svg>
@@ -407,9 +407,8 @@
                             <div>
                                 <textarea
                                     x-model="detailForm.content"
-                                    rows="10"
                                     placeholder="Write something…"
-                                    class="w-full bg-transparent text-sm text-ink-200 placeholder-ink-600 outline-none leading-relaxed resize-none"
+                                    class="w-full min-h-[50vh] bg-transparent text-sm text-ink-200 placeholder-ink-600 outline-none leading-relaxed resize-none [field-sizing:content]"
                                 ></textarea>
                                 <p class="text-xs text-red-400 mt-1.5" x-show="errors.content" x-text="errors.content?.[0]"></p>
                             </div>

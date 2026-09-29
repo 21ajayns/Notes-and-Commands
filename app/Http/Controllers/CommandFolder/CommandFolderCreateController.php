@@ -20,6 +20,7 @@ class CommandFolderCreateController extends Controller
     public function __invoke(CommandFolderCreateRequest $request): JsonResponse
     {
         $dto = new CommandFolderCreateDto(
+            $this->organizationId(),
             $request->validated('name'),
             new CategoryEnum($request->validated('category')),
             $request->validated('folder_id')

@@ -19,6 +19,7 @@ class NoteRepositoryTest extends TestCase
     public function testCreatePersistsANoteWithOfficeCategory(): void
     {
         $dto = new NoteCreateDto(
+            $this->organizationId(),
             'Standup notes',
             'Discussed roadmap for Q3',
             CategoryEnum::OFFICE()
@@ -37,6 +38,7 @@ class NoteRepositoryTest extends TestCase
     public function testCreatePersistsANoteWithPersonalCategory(): void
     {
         $dto = new NoteCreateDto(
+            $this->organizationId(),
             'Grocery list',
             'Milk, eggs, bread',
             CategoryEnum::PERSONAL()
@@ -55,6 +57,7 @@ class NoteRepositoryTest extends TestCase
     public function testCreatePersistsANoteWithoutAFolder(): void
     {
         $dto = new NoteCreateDto(
+            $this->organizationId(),
             'Standup notes',
             'Discussed roadmap for Q3',
             CategoryEnum::OFFICE()
@@ -67,9 +70,10 @@ class NoteRepositoryTest extends TestCase
 
     public function testCreatePersistsANoteLinkedToAFolder(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $dto = new NoteCreateDto(
+            $this->organizationId(),
             'Standup notes',
             'Discussed roadmap for Q3',
             CategoryEnum::OFFICE(),
@@ -90,10 +94,10 @@ class NoteRepositoryTest extends TestCase
     {
         $repository = new NoteRepository();
 
-        $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
-        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
 
-        $notes = $repository->all();
+        $notes = $repository->all($this->organizationId());
 
         $this->assertCount(2, $notes);
         $this->assertSame(['Standup notes', 'Grocery list'], $notes->pluck('title')->all());
@@ -101,13 +105,13 @@ class NoteRepositoryTest extends TestCase
 
     public function testAllReturnsOnlyNotesUnderTheGivenFolderId(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $repository = new NoteRepository();
-        $inFolder = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
-        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+        $inFolder = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
 
-        $notes = $repository->all($folder->getAttribute('id'));
+        $notes = $repository->all($this->organizationId(), $folder->getAttribute('id'));
 
         $this->assertCount(1, $notes);
         $this->assertSame($inFolder->getAttribute('id'), $notes->first()->getAttribute('id'));
@@ -115,7 +119,7 @@ class NoteRepositoryTest extends TestCase
 
     public function testAllReturnsAnEmptyCollectionWhenNoNotesExist(): void
     {
-        $notes = (new NoteRepository())->all();
+        $notes = (new NoteRepository())->all($this->organizationId());
 
         $this->assertCount(0, $notes);
     }
@@ -124,10 +128,10 @@ class NoteRepositoryTest extends TestCase
     {
         $repository = new NoteRepository();
 
-        $office = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
-        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+        $office = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
 
-        $notes = $repository->all(null, 'office');
+        $notes = $repository->all($this->organizationId(), null, 'office');
 
         $this->assertCount(1, $notes);
         $this->assertSame($office->getAttribute('id'), $notes->first()->getAttribute('id'));
@@ -137,9 +141,9 @@ class NoteRepositoryTest extends TestCase
     {
         $repository = new NoteRepository();
 
-        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
-        $found = $repository->find($note->getAttribute('id'));
+        $found = $repository->find($this->organizationId(), $note->getAttribute('id'));
 
         $this->assertSame($note->getAttribute('id'), $found->getAttribute('id'));
         $this->assertSame('Standup notes', $found->getAttribute('title'));
@@ -149,16 +153,16 @@ class NoteRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new NoteRepository())->find('00000000-0000-0000-0000-000000000000');
+        (new NoteRepository())->find($this->organizationId(), '00000000-0000-0000-0000-000000000000');
     }
 
     public function testUpdatePersistsTheNewTitleAndContent(): void
     {
         $repository = new NoteRepository();
 
-        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
-        $updated = $repository->update($note->getAttribute('id'), new NoteUpdateDto('Standup notes (revised)', 'Discussed roadmap for Q4'));
+        $updated = $repository->update($this->organizationId(), $note->getAttribute('id'), new NoteUpdateDto('Standup notes (revised)', 'Discussed roadmap for Q4'));
 
         $this->assertSame('Standup notes (revised)', $updated->getAttribute('title'));
         $this->assertSame('Discussed roadmap for Q4', $updated->getAttribute('content'));
@@ -174,16 +178,16 @@ class NoteRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new NoteRepository())->update('00000000-0000-0000-0000-000000000000', new NoteUpdateDto('Title', 'Content'));
+        (new NoteRepository())->update($this->organizationId(), '00000000-0000-0000-0000-000000000000', new NoteUpdateDto('Title', 'Content'));
     }
 
     public function testDeleteRemovesTheNote(): void
     {
         $repository = new NoteRepository();
 
-        $note = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
-        $repository->delete($note->getAttribute('id'));
+        $repository->delete($this->organizationId(), $note->getAttribute('id'));
 
         $this->assertDatabaseMissing('notes', [
             'id' => $note->getAttribute('id'),
@@ -194,6 +198,6 @@ class NoteRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new NoteRepository())->delete('00000000-0000-0000-0000-000000000000');
+        (new NoteRepository())->delete($this->organizationId(), '00000000-0000-0000-0000-000000000000');
     }
 }

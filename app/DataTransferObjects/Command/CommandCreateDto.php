@@ -7,6 +7,8 @@ use App\Constants\CategoryEnum;
 
 class CommandCreateDto
 {
+    private string $organizationId;
+
     private string $title;
 
     /** @var mixed[] */
@@ -20,15 +22,22 @@ class CommandCreateDto
      * @param mixed[] $rows
      */
     public function __construct(
+        string $organizationId,
         string $title,
         array $rows,
         CategoryEnum $category,
         ?string $folderId = null
     ) {
+        $this->organizationId = $organizationId;
         $this->title = $title;
         $this->rows = $rows;
         $this->category = $category;
         $this->folderId = $folderId;
+    }
+
+    public function getOrganizationId(): string
+    {
+        return $this->organizationId;
     }
 
     public function getTitle(): string

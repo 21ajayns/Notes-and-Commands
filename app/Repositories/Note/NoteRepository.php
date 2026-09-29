@@ -7,6 +7,7 @@ use App\DataTransferObjects\Note\NoteCreateDto;
 use App\DataTransferObjects\Note\NoteUpdateDto;
 use App\Models\Note\Note;
 use App\Repositories\Interfaces\Note\NoteRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class NoteRepository implements NoteRepositoryInterface
@@ -14,6 +15,7 @@ class NoteRepository implements NoteRepositoryInterface
     public function create(NoteCreateDto $createDto): Note
     {
         $note = new Note();
+        $note->setAttribute('organization_id', $createDto->getOrganizationId());
         $note->setAttribute('title', $createDto->getTitle());
         $note->setAttribute('content', $createDto->getContent());
         $note->setAttribute('category', $createDto->getCategory()->getValue());
@@ -24,22 +26,22 @@ class NoteRepository implements NoteRepositoryInterface
         return $note;
     }
 
-    public function all(?string $folderId = null, ?string $category = null): Collection
+    public function all(string $organizationId, ?string $folderId = null, ?string $category = null): Collection
     {
-        return Note::query()
+        return $this->forOrganization($organizationId)
             ->where('folder_id', $folderId)
             ->when($category !== null, fn ($query) => $query->where('category', $category))
             ->get();
     }
 
-    public function find(string $id): Note
+    public function find(string $organizationId, string $id): Note
     {
-        return Note::query()->findOrFail($id);
+        return $this->forOrganization($organizationId)->findOrFail($id);
     }
 
-    public function update(string $id, NoteUpdateDto $updateDto): Note
+    public function update(string $organizationId, string $id, NoteUpdateDto $updateDto): Note
     {
-        $note = Note::query()->findOrFail($id);
+        $note = $this->forOrganization($organizationId)->findOrFail($id);
 
         $note->setAttribute('title', $updateDto->getTitle());
         $note->setAttribute('content', $updateDto->getContent());
@@ -49,8 +51,13 @@ class NoteRepository implements NoteRepositoryInterface
         return $note;
     }
 
-    public function delete(string $id): void
+    public function delete(string $organizationId, string $id): void
     {
-        Note::query()->findOrFail($id)->delete();
+        $this->forOrganization($organizationId)->findOrFail($id)->delete();
+    }
+
+    private function forOrganization(string $organizationId): Builder
+    {
+        return Note::query()->where('organization_id', $organizationId);
     }
 }

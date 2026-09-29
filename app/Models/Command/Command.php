@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Models\Command;
 
 use App\AbstractModel;
+use App\Models\Organization\Organization;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -28,10 +30,16 @@ final class Command extends AbstractModel
         'rows' => 'array',
     ];
 
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function toArray(): array
     {
         return $this->serialise([
             'id' => $this->getAttribute('id'),
+            'organization_id' => $this->getAttribute('organization_id'),
             'title' => $this->getAttribute('title'),
             'rows' => $this->getAttribute('rows'),
             'category' => $this->getAttribute('category'),

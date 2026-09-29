@@ -18,6 +18,7 @@ class TaskGetController extends Controller
     public function __invoke(TaskGetRequest $request): JsonResponse
     {
         $tasks = $this->taskRepository->all(
+            $this->organizationId(),
             $request->validated('category'),
             $request->validated('status')
         );

@@ -12,9 +12,9 @@ interface FolderRepositoryInterface
 {
     public function create(FolderCreateDto $createDto): Folder;
 
-    public function all(?string $folderId = null, ?string $category = null): Collection;
+    public function all(string $organizationId, ?string $folderId = null, ?string $category = null): Collection;
 
-    public function update(string $id, FolderUpdateDto $updateDto): Folder;
+    public function update(string $organizationId, string $id, FolderUpdateDto $updateDto): Folder;
 
-    public function delete(string $id): void;
+    public function delete(string $organizationId, string $id): void;
 }

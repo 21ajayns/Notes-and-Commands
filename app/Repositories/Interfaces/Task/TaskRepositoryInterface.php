@@ -12,11 +12,11 @@ interface TaskRepositoryInterface
 {
     public function create(TaskCreateDto $createDto): Task;
 
-    public function all(?string $category = null, ?string $status = null): Collection;
+    public function all(string $organizationId, ?string $category = null, ?string $status = null): Collection;
 
-    public function update(string $id, TaskUpdateDto $updateDto): Task;
+    public function update(string $organizationId, string $id, TaskUpdateDto $updateDto): Task;
 
-    public function delete(string $id): void;
+    public function delete(string $organizationId, string $id): void;
 
-    public function deleteAll(?string $category = null): void;
+    public function deleteAll(string $organizationId, ?string $category = null): void;
 }

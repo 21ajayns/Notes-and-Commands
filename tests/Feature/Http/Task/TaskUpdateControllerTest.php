@@ -13,9 +13,16 @@ class TaskUpdateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItUpdatesTheTaskStatus(): void
     {
-        $task = (new TaskRepository())->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = (new TaskRepository())->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $response = $this->putJson("/api/tasks/{$task->getAttribute('id')}", [
             'status' => 'completed',
@@ -33,7 +40,7 @@ class TaskUpdateControllerTest extends TestCase
 
     public function testItUpdatesTheTaskTitle(): void
     {
-        $task = (new TaskRepository())->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = (new TaskRepository())->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $response = $this->putJson("/api/tasks/{$task->getAttribute('id')}", [
             'title' => 'Buy groceries and milk',
@@ -46,7 +53,7 @@ class TaskUpdateControllerTest extends TestCase
 
     public function testItRejectsAnInvalidStatus(): void
     {
-        $task = (new TaskRepository())->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = (new TaskRepository())->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $response = $this->putJson("/api/tasks/{$task->getAttribute('id')}", [
             'status' => 'not-a-real-status',

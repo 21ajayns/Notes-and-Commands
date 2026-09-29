@@ -23,7 +23,7 @@ class CommandUpdateController extends Controller
             $request->validated('rows')
         );
 
-        $updated = $this->commandRepository->update($command, $dto);
+        $updated = $this->commandRepository->update($this->organizationId(), $command, $dto);
 
         return response()->json($updated);
     }

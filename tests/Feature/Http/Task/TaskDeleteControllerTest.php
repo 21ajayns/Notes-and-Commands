@@ -13,9 +13,16 @@ class TaskDeleteControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItDeletesTheTask(): void
     {
-        $task = (new TaskRepository())->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = (new TaskRepository())->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $response = $this->deleteJson("/api/tasks/{$task->getAttribute('id')}");
 

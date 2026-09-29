@@ -13,9 +13,16 @@ class FolderDeleteControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItDeletesTheFolder(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $response = $this->deleteJson("/api/folders/{$folder->getAttribute('id')}");
 

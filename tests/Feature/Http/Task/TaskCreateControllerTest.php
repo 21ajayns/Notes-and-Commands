@@ -10,6 +10,13 @@ class TaskCreateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItCreatesATaskAsActive(): void
     {
         $response = $this->postJson('/api/tasks', [

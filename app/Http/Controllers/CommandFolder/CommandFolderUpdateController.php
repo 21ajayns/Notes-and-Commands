@@ -22,7 +22,7 @@ class CommandFolderUpdateController extends Controller
             $request->validated('name')
         );
 
-        $updated = $this->commandFolderRepository->update($commandFolder, $dto);
+        $updated = $this->commandFolderRepository->update($this->organizationId(), $commandFolder, $dto);
 
         return response()->json($updated);
     }

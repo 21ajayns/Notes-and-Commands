@@ -13,6 +13,13 @@ class FolderCreateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItCreatesATopLevelFolder(): void
     {
         $response = $this->postJson('/api/folders', [
@@ -34,7 +41,7 @@ class FolderCreateControllerTest extends TestCase
 
     public function testItCreatesANestedFolder(): void
     {
-        $parent = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $parent = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $response = $this->postJson('/api/folders', [
             'name' => 'Projects',

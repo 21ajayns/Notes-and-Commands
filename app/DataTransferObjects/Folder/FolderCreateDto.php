@@ -7,6 +7,8 @@ use App\Constants\CategoryEnum;
 
 class FolderCreateDto
 {
+    private string $organizationId;
+
     private string $name;
 
     private CategoryEnum $category;
@@ -14,13 +16,20 @@ class FolderCreateDto
     private ?string $folderId;
 
     public function __construct(
+        string $organizationId,
         string $name,
         CategoryEnum $category,
         ?string $folderId = null
     ) {
+        $this->organizationId = $organizationId;
         $this->name = $name;
         $this->category = $category;
         $this->folderId = $folderId;
+    }
+
+    public function getOrganizationId(): string
+    {
+        return $this->organizationId;
     }
 
     public function getName(): string

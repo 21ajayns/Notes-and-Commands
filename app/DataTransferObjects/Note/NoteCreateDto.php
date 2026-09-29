@@ -7,6 +7,8 @@ use App\Constants\CategoryEnum;
 
 class NoteCreateDto
 {
+    private string $organizationId;
+
     private string $title;
 
     private string $content;
@@ -16,15 +18,22 @@ class NoteCreateDto
     private ?string $folderId;
 
     public function __construct(
+        string $organizationId,
         string $title,
         string $content,
         CategoryEnum $category,
         ?string $folderId = null
     ) {
+        $this->organizationId = $organizationId;
         $this->title = $title;
         $this->content = $content;
         $this->category = $category;
         $this->folderId = $folderId;
+    }
+
+    public function getOrganizationId(): string
+    {
+        return $this->organizationId;
     }
 
     public function getTitle(): string

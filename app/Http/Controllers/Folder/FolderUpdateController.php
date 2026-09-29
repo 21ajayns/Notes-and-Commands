@@ -22,7 +22,7 @@ class FolderUpdateController extends Controller
             $request->validated('name')
         );
 
-        $updated = $this->folderRepository->update($folder, $dto);
+        $updated = $this->folderRepository->update($this->organizationId(), $folder, $dto);
 
         return response()->json($updated);
     }

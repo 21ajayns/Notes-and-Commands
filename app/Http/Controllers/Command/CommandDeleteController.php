@@ -16,7 +16,7 @@ class CommandDeleteController extends Controller
 
     public function __invoke(string $command): Response
     {
-        $this->commandRepository->delete($command);
+        $this->commandRepository->delete($this->organizationId(), $command);
 
         return response()->noContent();
     }

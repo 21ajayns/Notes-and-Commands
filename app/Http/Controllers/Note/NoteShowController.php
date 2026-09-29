@@ -16,6 +16,6 @@ class NoteShowController extends Controller
 
     public function __invoke(string $note): JsonResponse
     {
-        return response()->json($this->noteRepository->find($note));
+        return response()->json($this->noteRepository->find($this->organizationId(), $note));
     }
 }

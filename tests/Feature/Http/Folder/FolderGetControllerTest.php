@@ -13,11 +13,18 @@ class FolderGetControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItReturnsTopLevelFoldersWhenNoFolderIdGiven(): void
     {
         $repository = new FolderRepository();
-        $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL()));
 
         $response = $this->getJson('/api/folders');
 
@@ -28,9 +35,9 @@ class FolderGetControllerTest extends TestCase
     public function testItReturnsOnlyFoldersUnderTheGivenFolderId(): void
     {
         $repository = new FolderRepository();
-        $parent = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $child = $repository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
-        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+        $parent = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $child = $repository->create(new FolderCreateDto($this->organizationId(), 'Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL()));
 
         $response = $this->getJson('/api/folders?folder_id=' . $parent->getAttribute('id'));
 

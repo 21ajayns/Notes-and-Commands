@@ -23,7 +23,7 @@ class NoteUpdateController extends Controller
             $request->validated('content')
         );
 
-        $updated = $this->noteRepository->update($note, $dto);
+        $updated = $this->noteRepository->update($this->organizationId(), $note, $dto);
 
         return response()->json($updated);
     }

@@ -12,11 +12,11 @@ interface CommandRepositoryInterface
 {
     public function create(CommandCreateDto $createDto): Command;
 
-    public function all(?string $folderId = null, ?string $category = null): Collection;
+    public function all(string $organizationId, ?string $folderId = null, ?string $category = null): Collection;
 
-    public function find(string $id): Command;
+    public function find(string $organizationId, string $id): Command;
 
-    public function update(string $id, CommandUpdateDto $updateDto): Command;
+    public function update(string $organizationId, string $id, CommandUpdateDto $updateDto): Command;
 
-    public function delete(string $id): void;
+    public function delete(string $organizationId, string $id): void;
 }

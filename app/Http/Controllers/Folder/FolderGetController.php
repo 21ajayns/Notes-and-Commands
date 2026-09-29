@@ -18,6 +18,7 @@ class FolderGetController extends Controller
     public function __invoke(FolderGetRequest $request): JsonResponse
     {
         $folders = $this->folderRepository->all(
+            $this->organizationId(),
             $request->validated('folder_id'),
             $request->validated('category')
         );

@@ -15,11 +15,18 @@ class NoteGetControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItReturnsTopLevelNotesWhenNoFolderIdGiven(): void
     {
         $repository = new NoteRepository();
-        $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
-        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
 
         $response = $this->getJson('/api/notes');
 
@@ -29,11 +36,11 @@ class NoteGetControllerTest extends TestCase
 
     public function testItReturnsOnlyNotesUnderTheGivenFolderId(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $repository = new NoteRepository();
-        $inFolder = $repository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
-        $repository->create(new NoteCreateDto('Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
+        $inFolder = $repository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
+        $repository->create(new NoteCreateDto($this->organizationId(), 'Grocery list', 'Milk, eggs, bread', CategoryEnum::PERSONAL()));
 
         $response = $this->getJson('/api/notes?folder_id=' . $folder->getAttribute('id'));
 

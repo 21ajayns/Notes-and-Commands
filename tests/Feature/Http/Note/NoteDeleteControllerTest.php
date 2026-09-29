@@ -13,9 +13,16 @@ class NoteDeleteControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItDeletesTheNote(): void
     {
-        $note = (new NoteRepository())->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = (new NoteRepository())->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
         $response = $this->deleteJson("/api/notes/{$note->getAttribute('id')}");
 

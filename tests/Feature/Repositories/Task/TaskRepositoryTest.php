@@ -17,7 +17,7 @@ class TaskRepositoryTest extends TestCase
 
     public function testCreatePersistsATaskAsActiveByDefault(): void
     {
-        $task = (new TaskRepository())->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = (new TaskRepository())->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $this->assertSame('active', $task->getAttribute('status'));
 
@@ -33,10 +33,10 @@ class TaskRepositoryTest extends TestCase
     {
         $repository = new TaskRepository();
 
-        $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
-        $repository->create(new TaskCreateDto('Finish report', CategoryEnum::OFFICE()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Finish report', CategoryEnum::OFFICE()));
 
-        $tasks = $repository->all();
+        $tasks = $repository->all($this->organizationId());
 
         $this->assertCount(2, $tasks);
     }
@@ -45,10 +45,10 @@ class TaskRepositoryTest extends TestCase
     {
         $repository = new TaskRepository();
 
-        $office = $repository->create(new TaskCreateDto('Finish report', CategoryEnum::OFFICE()));
-        $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $office = $repository->create(new TaskCreateDto($this->organizationId(), 'Finish report', CategoryEnum::OFFICE()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
-        $tasks = $repository->all('office');
+        $tasks = $repository->all($this->organizationId(), 'office');
 
         $this->assertCount(1, $tasks);
         $this->assertSame($office->getAttribute('id'), $tasks->first()->getAttribute('id'));
@@ -58,11 +58,11 @@ class TaskRepositoryTest extends TestCase
     {
         $repository = new TaskRepository();
 
-        $active = $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
-        $completed = $repository->create(new TaskCreateDto('Finish report', CategoryEnum::OFFICE()));
-        $repository->update($completed->getAttribute('id'), new TaskUpdateDto(null, TaskStatusEnum::COMPLETED()));
+        $active = $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
+        $completed = $repository->create(new TaskCreateDto($this->organizationId(), 'Finish report', CategoryEnum::OFFICE()));
+        $repository->update($this->organizationId(), $completed->getAttribute('id'), new TaskUpdateDto(null, TaskStatusEnum::COMPLETED()));
 
-        $tasks = $repository->all(null, 'active');
+        $tasks = $repository->all($this->organizationId(), null, 'active');
 
         $this->assertCount(1, $tasks);
         $this->assertSame($active->getAttribute('id'), $tasks->first()->getAttribute('id'));
@@ -72,9 +72,9 @@ class TaskRepositoryTest extends TestCase
     {
         $repository = new TaskRepository();
 
-        $task = $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
-        $updated = $repository->update($task->getAttribute('id'), new TaskUpdateDto(null, TaskStatusEnum::COMPLETED()));
+        $updated = $repository->update($this->organizationId(), $task->getAttribute('id'), new TaskUpdateDto(null, TaskStatusEnum::COMPLETED()));
 
         $this->assertSame('Buy groceries', $updated->getAttribute('title'));
         $this->assertSame('completed', $updated->getAttribute('status'));
@@ -84,16 +84,16 @@ class TaskRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new TaskRepository())->update('00000000-0000-0000-0000-000000000000', new TaskUpdateDto('Title', null));
+        (new TaskRepository())->update($this->organizationId(), '00000000-0000-0000-0000-000000000000', new TaskUpdateDto('Title', null));
     }
 
     public function testDeleteRemovesTheTask(): void
     {
         $repository = new TaskRepository();
 
-        $task = $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $task = $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
-        $repository->delete($task->getAttribute('id'));
+        $repository->delete($this->organizationId(), $task->getAttribute('id'));
 
         $this->assertDatabaseMissing('tasks', ['id' => $task->getAttribute('id')]);
     }
@@ -102,6 +102,6 @@ class TaskRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new TaskRepository())->delete('00000000-0000-0000-0000-000000000000');
+        (new TaskRepository())->delete($this->organizationId(), '00000000-0000-0000-0000-000000000000');
     }
 }

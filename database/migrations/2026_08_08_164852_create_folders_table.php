@@ -14,7 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create(self::TABLE, function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id');
+            // Declared before the self-referencing key below: Postgres adds keys in
+            // the order they are declared and needs the primary key to exist first.
+            $table->primary('id');
             $table->string('name');
             $table->string('category');
             $table->foreignUuid('folder_id')->nullable()->constrained(self::TABLE)->cascadeOnDelete();

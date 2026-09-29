@@ -8,11 +8,13 @@ use Illuminate\Http\Request;
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
+     * The trusted proxies for this application. Render terminates HTTPS in front
+     * of the app, so its forwarded headers are trusted to get https URLs and
+     * secure cookies right.
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.

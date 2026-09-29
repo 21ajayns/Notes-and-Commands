@@ -7,6 +7,7 @@ use App\DataTransferObjects\Command\CommandCreateDto;
 use App\DataTransferObjects\Command\CommandUpdateDto;
 use App\Models\Command\Command;
 use App\Repositories\Interfaces\Command\CommandRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class CommandRepository implements CommandRepositoryInterface
@@ -14,6 +15,7 @@ class CommandRepository implements CommandRepositoryInterface
     public function create(CommandCreateDto $createDto): Command
     {
         $command = new Command();
+        $command->setAttribute('organization_id', $createDto->getOrganizationId());
         $command->setAttribute('title', $createDto->getTitle());
         $command->setAttribute('rows', $createDto->getRows());
         $command->setAttribute('category', $createDto->getCategory()->getValue());
@@ -24,22 +26,22 @@ class CommandRepository implements CommandRepositoryInterface
         return $command;
     }
 
-    public function all(?string $folderId = null, ?string $category = null): Collection
+    public function all(string $organizationId, ?string $folderId = null, ?string $category = null): Collection
     {
-        return Command::query()
+        return $this->forOrganization($organizationId)
             ->where('command_folder_id', $folderId)
             ->when($category !== null, fn ($query) => $query->where('category', $category))
             ->get();
     }
 
-    public function find(string $id): Command
+    public function find(string $organizationId, string $id): Command
     {
-        return Command::query()->findOrFail($id);
+        return $this->forOrganization($organizationId)->findOrFail($id);
     }
 
-    public function update(string $id, CommandUpdateDto $updateDto): Command
+    public function update(string $organizationId, string $id, CommandUpdateDto $updateDto): Command
     {
-        $command = Command::query()->findOrFail($id);
+        $command = $this->forOrganization($organizationId)->findOrFail($id);
 
         $command->setAttribute('title', $updateDto->getTitle());
         $command->setAttribute('rows', $updateDto->getRows());
@@ -49,8 +51,13 @@ class CommandRepository implements CommandRepositoryInterface
         return $command;
     }
 
-    public function delete(string $id): void
+    public function delete(string $organizationId, string $id): void
     {
-        Command::query()->findOrFail($id)->delete();
+        $this->forOrganization($organizationId)->findOrFail($id)->delete();
+    }
+
+    private function forOrganization(string $organizationId): Builder
+    {
+        return Command::query()->where('organization_id', $organizationId);
     }
 }

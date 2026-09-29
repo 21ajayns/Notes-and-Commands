@@ -37,30 +37,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::post('/folders', FolderCreateController::class);
-Route::get('/folders', FolderGetController::class);
-Route::put('/folders/{folder}', FolderUpdateController::class);
-Route::delete('/folders/{folder}', FolderDeleteController::class);
-Route::post('/notes', NoteCreateController::class);
-Route::get('/notes', NoteGetController::class);
-Route::get('/notes/{note}', NoteShowController::class);
-Route::put('/notes/{note}', NoteUpdateController::class);
-Route::delete('/notes/{note}', NoteDeleteController::class);
-Route::post('/tasks', TaskCreateController::class);
-Route::get('/tasks', TaskGetController::class);
-Route::delete('/tasks/clear', TaskClearController::class);
-Route::put('/tasks/{task}', TaskUpdateController::class);
-Route::delete('/tasks/{task}', TaskDeleteController::class);
-Route::post('/command-folders', CommandFolderCreateController::class);
-Route::get('/command-folders', CommandFolderGetController::class);
-Route::put('/command-folders/{commandFolder}', CommandFolderUpdateController::class);
-Route::delete('/command-folders/{commandFolder}', CommandFolderDeleteController::class);
-Route::post('/commands', CommandCreateController::class);
-Route::get('/commands', CommandGetController::class);
-Route::get('/commands/{command}', CommandShowController::class);
-Route::put('/commands/{command}', CommandUpdateController::class);
-Route::delete('/commands/{command}', CommandDeleteController::class);
+    Route::post('/folders', FolderCreateController::class);
+    Route::get('/folders', FolderGetController::class);
+    Route::put('/folders/{folder}', FolderUpdateController::class);
+    Route::delete('/folders/{folder}', FolderDeleteController::class);
+    Route::post('/notes', NoteCreateController::class);
+    Route::get('/notes', NoteGetController::class);
+    Route::get('/notes/{note}', NoteShowController::class);
+    Route::put('/notes/{note}', NoteUpdateController::class);
+    Route::delete('/notes/{note}', NoteDeleteController::class);
+    Route::post('/tasks', TaskCreateController::class);
+    Route::get('/tasks', TaskGetController::class);
+    Route::delete('/tasks/clear', TaskClearController::class);
+    Route::put('/tasks/{task}', TaskUpdateController::class);
+    Route::delete('/tasks/{task}', TaskDeleteController::class);
+    Route::post('/command-folders', CommandFolderCreateController::class);
+    Route::get('/command-folders', CommandFolderGetController::class);
+    Route::put('/command-folders/{commandFolder}', CommandFolderUpdateController::class);
+    Route::delete('/command-folders/{commandFolder}', CommandFolderDeleteController::class);
+    Route::post('/commands', CommandCreateController::class);
+    Route::get('/commands', CommandGetController::class);
+    Route::get('/commands/{command}', CommandShowController::class);
+    Route::put('/commands/{command}', CommandUpdateController::class);
+    Route::delete('/commands/{command}', CommandDeleteController::class);
+});

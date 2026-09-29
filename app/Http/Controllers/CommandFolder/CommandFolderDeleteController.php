@@ -16,7 +16,7 @@ class CommandFolderDeleteController extends Controller
 
     public function __invoke(string $commandFolder): Response
     {
-        $this->commandFolderRepository->delete($commandFolder);
+        $this->commandFolderRepository->delete($this->organizationId(), $commandFolder);
 
         return response()->noContent();
     }

@@ -26,7 +26,7 @@ class TaskUpdateController extends Controller
             $status !== null ? new TaskStatusEnum($status) : null
         );
 
-        $updated = $this->taskRepository->update($task, $dto);
+        $updated = $this->taskRepository->update($this->organizationId(), $task, $dto);
 
         return response()->json($updated);
     }

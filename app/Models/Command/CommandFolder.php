@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Command;
 
 use App\AbstractModel;
+use App\Models\Organization\Organization;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -28,10 +29,16 @@ final class CommandFolder extends AbstractModel
         return $this->belongsTo(self::class, 'command_folder_id');
     }
 
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function toArray(): array
     {
         return $this->serialise([
             'id' => $this->getAttribute('id'),
+            'organization_id' => $this->getAttribute('organization_id'),
             'name' => $this->getAttribute('name'),
             'category' => $this->getAttribute('category'),
             'folder_id' => $this->getAttribute('command_folder_id'),

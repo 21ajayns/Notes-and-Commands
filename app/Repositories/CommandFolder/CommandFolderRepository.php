@@ -7,6 +7,7 @@ use App\DataTransferObjects\CommandFolder\CommandFolderCreateDto;
 use App\DataTransferObjects\CommandFolder\CommandFolderUpdateDto;
 use App\Models\Command\CommandFolder;
 use App\Repositories\Interfaces\CommandFolder\CommandFolderRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class CommandFolderRepository implements CommandFolderRepositoryInterface
@@ -14,6 +15,7 @@ class CommandFolderRepository implements CommandFolderRepositoryInterface
     public function create(CommandFolderCreateDto $createDto): CommandFolder
     {
         $folder = new CommandFolder();
+        $folder->setAttribute('organization_id', $createDto->getOrganizationId());
         $folder->setAttribute('name', $createDto->getName());
         $folder->setAttribute('category', $createDto->getCategory()->getValue());
         $folder->setAttribute('command_folder_id', $createDto->getFolderId());
@@ -23,17 +25,17 @@ class CommandFolderRepository implements CommandFolderRepositoryInterface
         return $folder;
     }
 
-    public function all(?string $folderId = null, ?string $category = null): Collection
+    public function all(string $organizationId, ?string $folderId = null, ?string $category = null): Collection
     {
-        return CommandFolder::query()
+        return $this->forOrganization($organizationId)
             ->where('command_folder_id', $folderId)
             ->when($category !== null, fn ($query) => $query->where('category', $category))
             ->get();
     }
 
-    public function update(string $id, CommandFolderUpdateDto $updateDto): CommandFolder
+    public function update(string $organizationId, string $id, CommandFolderUpdateDto $updateDto): CommandFolder
     {
-        $folder = CommandFolder::query()->findOrFail($id);
+        $folder = $this->forOrganization($organizationId)->findOrFail($id);
 
         $folder->setAttribute('name', $updateDto->getName());
 
@@ -42,8 +44,13 @@ class CommandFolderRepository implements CommandFolderRepositoryInterface
         return $folder;
     }
 
-    public function delete(string $id): void
+    public function delete(string $organizationId, string $id): void
     {
-        CommandFolder::query()->findOrFail($id)->delete();
+        $this->forOrganization($organizationId)->findOrFail($id)->delete();
+    }
+
+    private function forOrganization(string $organizationId): Builder
+    {
+        return CommandFolder::query()->where('organization_id', $organizationId);
     }
 }

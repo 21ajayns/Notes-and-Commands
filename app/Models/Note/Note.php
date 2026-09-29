@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Models\Note;
 
 use App\AbstractModel;
+use App\Models\Organization\Organization;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
@@ -24,10 +26,16 @@ final class Note extends AbstractModel
         'folder_id',
     ];
 
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     public function toArray(): array
     {
         return $this->serialise([
             'id' => $this->getAttribute('id'),
+            'organization_id' => $this->getAttribute('organization_id'),
             'title' => $this->getAttribute('title'),
             'content' => $this->getAttribute('content'),
             'category' => $this->getAttribute('category'),

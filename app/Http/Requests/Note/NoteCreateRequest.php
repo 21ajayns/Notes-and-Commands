@@ -20,7 +20,7 @@ class NoteCreateRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'category' => ['required', 'string', Rule::in(CategoryEnum::toArray())],
-            'folder_id' => ['nullable', 'string', 'exists:folders,id'],
+            'folder_id' => ['bail', 'nullable', 'string', 'uuid', Rule::exists('folders', 'id')->where('organization_id', $this->user()?->getAttribute('organization_id'))],
         ];
     }
 }

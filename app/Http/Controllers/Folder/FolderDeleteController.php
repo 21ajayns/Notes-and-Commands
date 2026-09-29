@@ -16,7 +16,7 @@ class FolderDeleteController extends Controller
 
     public function __invoke(string $folder): Response
     {
-        $this->folderRepository->delete($folder);
+        $this->folderRepository->delete($this->organizationId(), $folder);
 
         return response()->noContent();
     }

@@ -16,6 +16,6 @@ class CommandShowController extends Controller
 
     public function __invoke(string $command): JsonResponse
     {
-        return response()->json($this->commandRepository->find($command));
+        return response()->json($this->commandRepository->find($this->organizationId(), $command));
     }
 }

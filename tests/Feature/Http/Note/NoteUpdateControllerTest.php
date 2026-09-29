@@ -13,9 +13,16 @@ class NoteUpdateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItUpdatesTheNoteTitleAndContent(): void
     {
-        $note = (new NoteRepository())->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = (new NoteRepository())->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
         $response = $this->putJson("/api/notes/{$note->getAttribute('id')}", [
             'title' => 'Standup notes (revised)',
@@ -35,7 +42,7 @@ class NoteUpdateControllerTest extends TestCase
 
     public function testItRejectsAMissingTitle(): void
     {
-        $note = (new NoteRepository())->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
+        $note = (new NoteRepository())->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE()));
 
         $response = $this->putJson("/api/notes/{$note->getAttribute('id')}", [
             'content' => 'Discussed roadmap for Q4',

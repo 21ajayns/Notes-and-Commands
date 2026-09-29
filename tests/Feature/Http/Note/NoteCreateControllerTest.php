@@ -13,6 +13,13 @@ class NoteCreateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItCreatesANoteWithoutAFolder(): void
     {
         $response = $this->postJson('/api/notes', [
@@ -35,7 +42,7 @@ class NoteCreateControllerTest extends TestCase
 
     public function testItCreatesANoteLinkedToAFolder(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $response = $this->postJson('/api/notes', [
             'title' => 'Standup notes',

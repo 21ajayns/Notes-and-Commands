@@ -7,14 +7,22 @@ use App\Constants\CategoryEnum;
 
 class TaskCreateDto
 {
+    private string $organizationId;
+
     private string $title;
 
     private CategoryEnum $category;
 
-    public function __construct(string $title, CategoryEnum $category)
+    public function __construct(string $organizationId, string $title, CategoryEnum $category)
     {
+        $this->organizationId = $organizationId;
         $this->title = $title;
         $this->category = $category;
+    }
+
+    public function getOrganizationId(): string
+    {
+        return $this->organizationId;
     }
 
     public function getTitle(): string

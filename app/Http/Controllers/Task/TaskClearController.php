@@ -17,7 +17,7 @@ class TaskClearController extends Controller
 
     public function __invoke(TaskClearRequest $request): Response
     {
-        $this->taskRepository->deleteAll($request->validated('category'));
+        $this->taskRepository->deleteAll($this->organizationId(), $request->validated('category'));
 
         return response()->noContent();
     }

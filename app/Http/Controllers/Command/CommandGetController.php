@@ -18,6 +18,7 @@ class CommandGetController extends Controller
     public function __invoke(CommandGetRequest $request): JsonResponse
     {
         $commands = $this->commandRepository->all(
+            $this->organizationId(),
             $request->validated('folder_id'),
             $request->validated('category')
         );

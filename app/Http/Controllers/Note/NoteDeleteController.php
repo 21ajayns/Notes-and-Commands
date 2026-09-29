@@ -16,7 +16,7 @@ class NoteDeleteController extends Controller
 
     public function __invoke(string $note): Response
     {
-        $this->noteRepository->delete($note);
+        $this->noteRepository->delete($this->organizationId(), $note);
 
         return response()->noContent();
     }

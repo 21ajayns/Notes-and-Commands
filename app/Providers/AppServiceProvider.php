@@ -10,8 +10,10 @@ use App\Repositories\Interfaces\CommandFolder\CommandFolderRepositoryInterface;
 use App\Repositories\Interfaces\Folder\FolderRepositoryInterface;
 use App\Repositories\Interfaces\Note\NoteRepositoryInterface;
 use App\Repositories\Interfaces\Task\TaskRepositoryInterface;
+use App\Repositories\Interfaces\User\UserRepositoryInterface;
 use App\Repositories\Note\NoteRepository;
 use App\Repositories\Task\TaskRepository;
+use App\Repositories\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
         $this->app->bind(CommandFolderRepositoryInterface::class, CommandFolderRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     /**

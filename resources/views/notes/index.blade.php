@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Cove</title>
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg?v=2">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=2">
@@ -118,6 +119,24 @@
         >
             <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6L3.5 10 7 14M13 6l3.5 4-3.5 4M11.5 4l-3 12"/></svg>
         </button>
+
+        <div class="mt-auto flex flex-col items-center gap-3">
+            <div
+                class="w-9 h-9 flex items-center justify-center bg-white/[0.06] border border-white/[0.08] text-xs font-semibold text-ink-100 select-none"
+                title="{{ auth()->user()->name }} · {{ auth()->user()->email }}"
+            >{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</div>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button
+                    type="submit"
+                    title="Log out"
+                    class="w-10 h-10 flex items-center justify-center text-ink-500 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                >
+                    <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H4v12h4M13 6l4 4-4 4M17 10H8"/></svg>
+                </button>
+            </form>
+        </div>
     </div>
 
     <!-- Sidebar -->
@@ -866,6 +885,29 @@
 </div>
 
 <script>
+    // Every API call carries the session's CSRF token; an expired session goes back to the login page.
+    (() => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const nativeFetch = window.fetch.bind(window);
+
+        window.fetch = async (input, init = {}) => {
+            const headers = new Headers(init.headers || {});
+            headers.set('X-CSRF-TOKEN', csrfToken);
+            headers.set('X-Requested-With', 'XMLHttpRequest');
+            if (!headers.has('Accept')) {
+                headers.set('Accept', 'application/json');
+            }
+
+            const response = await nativeFetch(input, { ...init, headers, credentials: 'same-origin' });
+
+            if (response.status === 401 || response.status === 419) {
+                window.location.href = '/login';
+            }
+
+            return response;
+        };
+    })();
+
     function notesApp() {
         return {
             showSplash: true,

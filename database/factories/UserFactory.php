@@ -2,15 +2,19 @@
 
 namespace Database\Factories;
 
+use App\Models\Organization\Organization;
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User\User>
  */
 class UserFactory extends Factory
 {
+    protected $model = User::class;
+
     /**
      * The current password being used by the factory.
      */
@@ -24,6 +28,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'organization_id' => fn () => Organization::query()->create(['name' => fake()->company()])->getId(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

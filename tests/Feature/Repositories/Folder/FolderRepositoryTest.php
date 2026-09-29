@@ -18,7 +18,7 @@ class FolderRepositoryTest extends TestCase
 
     public function testCreatePersistsATopLevelFolder(): void
     {
-        $dto = new FolderCreateDto('Work', CategoryEnum::OFFICE());
+        $dto = new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE());
 
         $folder = (new FolderRepository())->create($dto);
 
@@ -34,7 +34,7 @@ class FolderRepositoryTest extends TestCase
 
     public function testCreatePersistsAFolderWithPersonalCategory(): void
     {
-        $dto = new FolderCreateDto('Personal', CategoryEnum::PERSONAL());
+        $dto = new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL());
 
         $folder = (new FolderRepository())->create($dto);
 
@@ -48,9 +48,9 @@ class FolderRepositoryTest extends TestCase
 
     public function testCreatePersistsANestedFolderWithParent(): void
     {
-        $parent = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $parent = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
-        $dto = new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id'));
+        $dto = new FolderCreateDto($this->organizationId(), 'Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id'));
 
         $child = (new FolderRepository())->create($dto);
 
@@ -69,10 +69,10 @@ class FolderRepositoryTest extends TestCase
     {
         $repository = new FolderRepository();
 
-        $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL()));
 
-        $folders = $repository->all();
+        $folders = $repository->all($this->organizationId());
 
         $this->assertCount(2, $folders);
         $this->assertSame(['Work', 'Personal'], $folders->pluck('name')->all());
@@ -82,11 +82,11 @@ class FolderRepositoryTest extends TestCase
     {
         $repository = new FolderRepository();
 
-        $parent = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $child = $repository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
-        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+        $parent = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $child = $repository->create(new FolderCreateDto($this->organizationId(), 'Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL()));
 
-        $folders = $repository->all($parent->getAttribute('id'));
+        $folders = $repository->all($this->organizationId(), $parent->getAttribute('id'));
 
         $this->assertCount(1, $folders);
         $this->assertSame($child->getAttribute('id'), $folders->first()->getAttribute('id'));
@@ -94,7 +94,7 @@ class FolderRepositoryTest extends TestCase
 
     public function testAllReturnsAnEmptyCollectionWhenNoFoldersExist(): void
     {
-        $folders = (new FolderRepository())->all();
+        $folders = (new FolderRepository())->all($this->organizationId());
 
         $this->assertCount(0, $folders);
     }
@@ -103,10 +103,10 @@ class FolderRepositoryTest extends TestCase
     {
         $repository = new FolderRepository();
 
-        $work = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $repository->create(new FolderCreateDto('Personal', CategoryEnum::PERSONAL()));
+        $work = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $repository->create(new FolderCreateDto($this->organizationId(), 'Personal', CategoryEnum::PERSONAL()));
 
-        $folders = $repository->all(null, 'office');
+        $folders = $repository->all($this->organizationId(), null, 'office');
 
         $this->assertCount(1, $folders);
         $this->assertSame($work->getAttribute('id'), $folders->first()->getAttribute('id'));
@@ -116,9 +116,9 @@ class FolderRepositoryTest extends TestCase
     {
         $repository = new FolderRepository();
 
-        $folder = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
-        $updated = $repository->update($folder->getAttribute('id'), new FolderUpdateDto('Work (renamed)'));
+        $updated = $repository->update($this->organizationId(), $folder->getAttribute('id'), new FolderUpdateDto('Work (renamed)'));
 
         $this->assertSame('Work (renamed)', $updated->getAttribute('name'));
 
@@ -132,16 +132,16 @@ class FolderRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new FolderRepository())->update('00000000-0000-0000-0000-000000000000', new FolderUpdateDto('Name'));
+        (new FolderRepository())->update($this->organizationId(), '00000000-0000-0000-0000-000000000000', new FolderUpdateDto('Name'));
     }
 
     public function testDeleteRemovesTheFolder(): void
     {
         $repository = new FolderRepository();
 
-        $folder = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
-        $repository->delete($folder->getAttribute('id'));
+        $repository->delete($this->organizationId(), $folder->getAttribute('id'));
 
         $this->assertDatabaseMissing('folders', [
             'id' => $folder->getAttribute('id'),
@@ -152,18 +152,18 @@ class FolderRepositoryTest extends TestCase
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
 
-        (new FolderRepository())->delete('00000000-0000-0000-0000-000000000000');
+        (new FolderRepository())->delete($this->organizationId(), '00000000-0000-0000-0000-000000000000');
     }
 
     public function testDeletingAFolderCascadesToItsChildFolders(): void
     {
         $repository = new FolderRepository();
 
-        $parent = $repository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $child = $repository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
-        $grandchild = $repository->create(new FolderCreateDto('Sprint 1', CategoryEnum::OFFICE(), $child->getAttribute('id')));
+        $parent = $repository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $child = $repository->create(new FolderCreateDto($this->organizationId(), 'Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $grandchild = $repository->create(new FolderCreateDto($this->organizationId(), 'Sprint 1', CategoryEnum::OFFICE(), $child->getAttribute('id')));
 
-        $repository->delete($parent->getAttribute('id'));
+        $repository->delete($this->organizationId(), $parent->getAttribute('id'));
 
         $this->assertDatabaseMissing('folders', ['id' => $child->getAttribute('id')]);
         $this->assertDatabaseMissing('folders', ['id' => $grandchild->getAttribute('id')]);
@@ -174,10 +174,10 @@ class FolderRepositoryTest extends TestCase
         $folderRepository = new FolderRepository();
         $noteRepository = new NoteRepository();
 
-        $folder = $folderRepository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $note = $noteRepository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
+        $folder = $folderRepository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $note = $noteRepository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $folder->getAttribute('id')));
 
-        $folderRepository->delete($folder->getAttribute('id'));
+        $folderRepository->delete($this->organizationId(), $folder->getAttribute('id'));
 
         $this->assertDatabaseMissing('notes', ['id' => $note->getAttribute('id')]);
     }
@@ -187,11 +187,11 @@ class FolderRepositoryTest extends TestCase
         $folderRepository = new FolderRepository();
         $noteRepository = new NoteRepository();
 
-        $parent = $folderRepository->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
-        $child = $folderRepository->create(new FolderCreateDto('Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
-        $note = $noteRepository->create(new NoteCreateDto('Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $child->getAttribute('id')));
+        $parent = $folderRepository->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
+        $child = $folderRepository->create(new FolderCreateDto($this->organizationId(), 'Projects', CategoryEnum::OFFICE(), $parent->getAttribute('id')));
+        $note = $noteRepository->create(new NoteCreateDto($this->organizationId(), 'Standup notes', 'Discussed roadmap for Q3', CategoryEnum::OFFICE(), $child->getAttribute('id')));
 
-        $folderRepository->delete($parent->getAttribute('id'));
+        $folderRepository->delete($this->organizationId(), $parent->getAttribute('id'));
 
         $this->assertDatabaseMissing('notes', ['id' => $note->getAttribute('id')]);
     }

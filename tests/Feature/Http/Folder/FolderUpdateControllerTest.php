@@ -13,9 +13,16 @@ class FolderUpdateControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItUpdatesTheFolderName(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $response = $this->putJson("/api/folders/{$folder->getAttribute('id')}", [
             'name' => 'Work (renamed)',
@@ -32,7 +39,7 @@ class FolderUpdateControllerTest extends TestCase
 
     public function testItRejectsAMissingName(): void
     {
-        $folder = (new FolderRepository())->create(new FolderCreateDto('Work', CategoryEnum::OFFICE()));
+        $folder = (new FolderRepository())->create(new FolderCreateDto($this->organizationId(), 'Work', CategoryEnum::OFFICE()));
 
         $response = $this->putJson("/api/folders/{$folder->getAttribute('id')}", []);
 

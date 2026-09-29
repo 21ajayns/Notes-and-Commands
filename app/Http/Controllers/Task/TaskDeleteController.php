@@ -16,7 +16,7 @@ class TaskDeleteController extends Controller
 
     public function __invoke(string $task): Response
     {
-        $this->taskRepository->delete($task);
+        $this->taskRepository->delete($this->organizationId(), $task);
 
         return response()->noContent();
     }

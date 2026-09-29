@@ -20,6 +20,7 @@ class TaskCreateController extends Controller
     public function __invoke(TaskCreateRequest $request): JsonResponse
     {
         $dto = new TaskCreateDto(
+            $this->organizationId(),
             $request->validated('title'),
             new CategoryEnum($request->validated('category'))
         );

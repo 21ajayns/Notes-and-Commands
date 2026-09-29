@@ -20,6 +20,7 @@ class CommandCreateController extends Controller
     public function __invoke(CommandCreateRequest $request): JsonResponse
     {
         $dto = new CommandCreateDto(
+            $this->organizationId(),
             $request->validated('title'),
             $request->validated('rows'),
             new CategoryEnum($request->validated('category')),

@@ -13,11 +13,18 @@ class TaskGetControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->signIn();
+    }
+
     public function testItReturnsAllTasks(): void
     {
         $repository = new TaskRepository();
-        $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
-        $repository->create(new TaskCreateDto('Finish report', CategoryEnum::OFFICE()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Finish report', CategoryEnum::OFFICE()));
 
         $response = $this->getJson('/api/tasks');
 
@@ -28,8 +35,8 @@ class TaskGetControllerTest extends TestCase
     public function testItFiltersByCategoryAndStatus(): void
     {
         $repository = new TaskRepository();
-        $office = $repository->create(new TaskCreateDto('Finish report', CategoryEnum::OFFICE()));
-        $repository->create(new TaskCreateDto('Buy groceries', CategoryEnum::PERSONAL()));
+        $office = $repository->create(new TaskCreateDto($this->organizationId(), 'Finish report', CategoryEnum::OFFICE()));
+        $repository->create(new TaskCreateDto($this->organizationId(), 'Buy groceries', CategoryEnum::PERSONAL()));
 
         $response = $this->getJson('/api/tasks?category=office&status=active');
 

@@ -20,6 +20,7 @@ class NoteCreateController extends Controller
     public function __invoke(NoteCreateRequest $request): JsonResponse
     {
         $dto = new NoteCreateDto(
+            $this->organizationId(),
             $request->validated('title'),
             $request->validated('content'),
             new CategoryEnum($request->validated('category')),

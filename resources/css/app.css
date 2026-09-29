@@ -10,7 +10,6 @@
     }
 
     body {
-        font-feature-settings: "cv11", "ss01";
         -webkit-font-smoothing: antialiased;
     }
 
@@ -38,7 +37,7 @@
     }
 
     .btn-primary {
-        @apply btn bg-gradient-to-b from-indigo-500 to-indigo-600 text-white px-5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-indigo-400 hover:to-indigo-500;
+        @apply btn bg-gradient-to-b from-amber-600 to-amber-700 text-white px-5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] hover:from-amber-500 hover:to-amber-600;
     }
 
     .btn-secondary {
@@ -50,11 +49,80 @@
     }
 
     .input-field {
-        @apply w-full rounded-xl bg-white/[0.04] border border-white/10 px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-500 outline-none transition duration-150 focus:border-indigo-500/60 focus:ring-4 focus:ring-indigo-500/10;
+        @apply w-full rounded-xl bg-white/[0.04] border border-white/10 px-3.5 py-2.5 text-sm text-ink-100 placeholder-ink-500 outline-none transition duration-150 focus:border-amber-600/60 focus:ring-4 focus:ring-amber-600/10;
     }
 
     .card {
         @apply rounded-2xl bg-ink-850 border border-white/[0.06] shadow-card transition-all duration-150;
+    }
+
+    .tile {
+        @apply relative cursor-pointer p-5 flex flex-col gap-2.5 bg-ink-850 border border-white/[0.07] transition-colors duration-150 hover:bg-ink-800 hover:border-white/[0.16];
+    }
+
+    .tile-folder {
+        @apply tile shadow-[inset_0_2px_0_0_rgba(245,158,11,0.7)];
+    }
+
+    .tile-note {
+        @apply tile shadow-[inset_3px_0_0_0_rgba(162,62,76,0.8)];
+    }
+
+    .tile-action {
+        @apply w-7 h-7 flex items-center justify-center text-ink-500;
+    }
+
+    .ledger-stat {
+        @apply flex flex-col items-start gap-1 px-4 py-3.5 text-left bg-ink-900 border-r border-white/[0.07] last:border-r-0 transition-colors duration-150 hover:bg-ink-850;
+        box-shadow: inset 0 2px 0 0 transparent;
+    }
+
+    .ledger-stat-active {
+        @apply bg-ink-850;
+        box-shadow: inset 0 2px 0 0 var(--c);
+    }
+
+    .ledger-row {
+        @apply relative grid items-center gap-3 pl-5 pr-3 min-h-[48px] bg-ink-900 border-b border-white/[0.07] last:border-b-0 transition-colors duration-150 hover:bg-ink-850;
+        grid-template-columns: 18px 24px minmax(0, 1fr) 130px 44px 28px;
+    }
+
+    .ledger-row::before {
+        content: '';
+        @apply absolute left-0 top-0 bottom-0 w-[3px];
+        background: var(--c);
+    }
+
+    .ledger-head {
+        @apply min-h-[34px] bg-ink-850 text-[10px] font-semibold uppercase tracking-widest text-ink-500 hover:bg-ink-850;
+    }
+
+    .ledger-head::before {
+        display: none;
+    }
+
+    .cmd-row {
+        @apply grid items-center gap-3 px-4 min-h-[46px] bg-ink-900 border-b border-white/[0.07] last:border-b-0 transition-colors duration-150 hover:bg-ink-850;
+        grid-template-columns: 28px minmax(130px, 1fr) minmax(0, 1.8fr) 72px;
+    }
+
+    .cmd-list-row {
+        @apply relative grid items-center gap-3 pl-5 pr-3 min-h-[50px] bg-ink-900 border-b border-white/[0.07] last:border-b-0 transition-colors duration-150 hover:bg-ink-850;
+        grid-template-columns: 18px minmax(160px, 1fr) minmax(0, 1.6fr) 44px 64px;
+    }
+
+    .cmd-list-row::before {
+        content: '';
+        @apply absolute left-0 top-0 bottom-0 w-[3px];
+        background: var(--c, transparent);
+    }
+
+    .cmd-head {
+        @apply min-h-[34px] bg-ink-850 text-[10px] font-semibold uppercase tracking-widest text-ink-500 hover:bg-ink-850;
+    }
+
+    .ledger-kbd {
+        @apply font-mono text-[11px] leading-none px-1.5 py-1 border border-white/[0.16] text-ink-400;
     }
 
     .flip-card {

@@ -3,16 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TLC</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#0a0a0c">
+    <title>Cove</title>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-180.png?v=2">
+    <link rel="manifest" href="/manifest.json?v=2">
+    <meta name="theme-color" content="#120e0a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Silkscreen:wght@400;700&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-ink-950 text-ink-100 antialiased font-sans text-sm">
@@ -30,9 +30,34 @@
         @click="showSplash = false"
         @keydown.window="showSplash = false"
         class="fixed inset-0 z-[100] flex flex-col items-center justify-center cursor-pointer select-none"
-        style="background: radial-gradient(circle at 50% 42%, #1b1b3a 0%, #0a0a0c 65%);"
+        style="background: radial-gradient(circle at 50% 42%, #2a1a12 0%, #120e0a 65%);"
     >
-        <img src="/images/logo.png" alt="TLC" class="w-40 sm:w-56 h-auto object-contain drop-shadow-2xl animate-pulse">
+        <div class="relative w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full animate-[spin_9s_linear_infinite]" style="border:1px solid rgba(232,164,85,0.18); border-top-color:#E8A455; border-right-color:#A23E4C;"></div>
+            <svg viewBox="0 0 64 64" class="w-14 h-14 sm:w-16 sm:h-16" role="img" aria-label="Cove">
+                <defs>
+                    <linearGradient id="coveGradSplash" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#E8A455"/>
+                        <stop offset="100%" stop-color="#A23E4C"/>
+                    </linearGradient>
+                    <filter id="coveGlowSplash" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="2.6" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <line x1="32" y1="10" x2="32" y2="3" stroke="url(#coveGradSplash)" stroke-width="2" stroke-linecap="round" filter="url(#coveGlowSplash)"/>
+                <path d="M43 13 A22 22 0 1 0 43 51" fill="none" stroke="url(#coveGradSplash)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowSplash)"/>
+                <circle cx="43" cy="13" r="3" fill="#E8A455" filter="url(#coveGlowSplash)"/>
+                <circle cx="43" cy="51" r="3" fill="#A23E4C" filter="url(#coveGlowSplash)"/>
+            </svg>
+        </div>
+        <span
+            class="mt-6 text-3xl sm:text-4xl font-bold tracking-[0.3em]"
+            style="font-family: 'Orbitron', sans-serif; background: linear-gradient(135deg, #E8A455, #A23E4C); -webkit-background-clip: text; background-clip: text; color: transparent;"
+        >COVE</span>
         <div class="mt-10 flex flex-col items-center gap-2 text-ink-500">
             <span class="text-xs font-semibold uppercase tracking-[0.2em]">Press anywhere to continue</span>
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
@@ -44,7 +69,25 @@
     <!-- Icon rail -->
     <div class="w-16 shrink-0 bg-ink-950 border-r border-white/[0.06] flex flex-col items-center py-4 gap-3">
         <div class="w-9 h-9 flex items-center justify-center">
-            <img src="/images/logo.png" alt="TLC" class="w-full h-full object-contain">
+            <svg viewBox="0 0 64 64" class="w-full h-full" role="img" aria-label="Cove">
+                <defs>
+                    <linearGradient id="coveGradRail" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#E8A455"/>
+                        <stop offset="100%" stop-color="#A23E4C"/>
+                    </linearGradient>
+                    <filter id="coveGlowRail" x="-60%" y="-60%" width="220%" height="220%">
+                        <feGaussianBlur stdDeviation="1.6" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <line x1="32" y1="10" x2="32" y2="3" stroke="url(#coveGradRail)" stroke-width="2" stroke-linecap="round" filter="url(#coveGlowRail)"/>
+                <path d="M43 13 A22 22 0 1 0 43 51" fill="none" stroke="url(#coveGradRail)" stroke-width="4" stroke-linecap="round" filter="url(#coveGlowRail)"/>
+                <circle cx="43" cy="13" r="3" fill="#E8A455" filter="url(#coveGlowRail)"/>
+                <circle cx="43" cy="51" r="3" fill="#A23E4C" filter="url(#coveGlowRail)"/>
+            </svg>
         </div>
 
         <div class="w-8 border-t border-white/[0.06]"></div>
@@ -86,10 +129,10 @@
                 class="flip-card w-full h-12 block"
             >
                 <div class="flip-card-inner" :class="activeCategory === 'personal' ? 'flip-card-flipped' : ''">
-                    <div class="flip-face flip-face-front bg-gradient-to-br from-emerald-500 to-teal-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                    <div class="flip-face flip-face-front bg-gradient-to-br from-[#A23E4C] to-[#8A2F3C] shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
                         Work
                     </div>
-                    <div class="flip-face flip-face-back bg-gradient-to-br from-blue-500 to-indigo-600 shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
+                    <div class="flip-face flip-face-back bg-gradient-to-br from-[#A23E4C] to-[#8A2F3C] shadow-card" style="font-family: 'Silkscreen', cursive; font-weight: 400; letter-spacing: 0.02em;">
                         Personal
                     </div>
                 </div>
@@ -212,7 +255,7 @@
                     @click="startNewNote()"
                     title="New note"
                     class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
-                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
+                    :class="'bg-gradient-to-b from-[#A23E4C] to-[#8A2F3C] hover:from-[#B5505E] hover:to-[#9C3F4D]'"
                 >
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M6 3a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V8l-5-5H6z"/>
@@ -266,20 +309,20 @@
                         <template x-for="folder in subfolders" :key="folder.id">
                             <div
                                 @click="selectFolder(folder.id)"
-                                class="rounded-2xl border-2 border-dashed border-white/15 hover:border-amber-500/40 hover:bg-amber-500/[0.04] p-5 flex flex-col gap-2.5 transition-all duration-150 relative group cursor-pointer"
+                                class="tile-folder group"
                             >
                                 <div class="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
                                     <button
                                         @click.stop="openRenameFolderModal(folder)"
                                         title="Rename folder"
-                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-amber-400 hover:bg-amber-500/10"
+                                        class="tile-action hover:text-amber-400 hover:bg-amber-500/10"
                                     >
                                         <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M13.5 2.5a1.5 1.5 0 012.121 2.121l-8.5 8.5-2.828.707.707-2.828 8.5-8.5z"/></svg>
                                     </button>
                                     <button
                                         @click.stop="deleteFolder(folder)"
                                         title="Delete folder"
-                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10"
+                                        class="tile-action hover:text-red-400 hover:bg-red-500/10"
                                     >
                                         <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
@@ -294,13 +337,12 @@
                         <template x-for="note in notes" :key="note.id">
                             <div
                                 @click="viewNote(note)"
-                                class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover relative group cursor-pointer"
-                                :class="activeCategory === 'office' ? 'border-l-emerald-500/60' : 'border-l-blue-500/60'"
+                                class="tile-note group"
                             >
                                 <button
                                     @click.stop="deleteNote(note)"
                                     title="Delete note"
-                                    class="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
+                                    class="absolute top-3 right-3 tile-action opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
                                 >
                                     <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
@@ -357,7 +399,7 @@
                                     type="text"
                                     x-model="detailForm.title"
                                     placeholder="Untitled"
-                                    class="w-full bg-transparent text-2xl font-bold text-white tracking-tight placeholder-ink-600 outline-none border-b border-white/10 focus:border-indigo-500/60 pb-2 transition-colors"
+                                    class="w-full bg-transparent text-2xl font-bold text-white tracking-tight placeholder-ink-600 outline-none border-b border-white/10 focus:border-amber-600/60 pb-2 transition-colors"
                                 >
                                 <p class="text-xs text-red-400 mt-1.5" x-show="errors.title" x-text="errors.title?.[0]"></p>
                             </div>
@@ -365,9 +407,8 @@
                             <div>
                                 <textarea
                                     x-model="detailForm.content"
-                                    rows="10"
                                     placeholder="Write something…"
-                                    class="w-full bg-transparent text-sm text-ink-200 placeholder-ink-600 outline-none leading-relaxed resize-none"
+                                    class="w-full min-h-[50vh] bg-transparent text-sm text-ink-200 placeholder-ink-600 outline-none leading-relaxed resize-none [field-sizing:content]"
                                 ></textarea>
                                 <p class="text-xs text-red-400 mt-1.5" x-show="errors.content" x-text="errors.content?.[0]"></p>
                             </div>
@@ -376,7 +417,7 @@
                                 <button
                                     type="submit"
                                     class="btn-primary"
-                                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
+                                    :class="'from-[#A23E4C] to-[#8A2F3C] hover:from-[#B5505E] hover:to-[#9C3F4D]'"
                                 >Save</button>
                                 <button type="button" @click="cancelEditDetail()" class="btn-ghost">Cancel</button>
                             </div>
@@ -395,7 +436,7 @@
                     @click="startNewCommand()"
                     title="New command set"
                     class="w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-[0_1px_0_0_rgba(255,255,255,0.16)_inset,0_1px_3px_rgba(0,0,0,0.5)] transition-all duration-150 active:scale-[0.95]"
-                    :class="activeCategory === 'office' ? 'bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
+                    :class="'bg-gradient-to-b from-[#A23E4C] to-[#8A2F3C] hover:from-[#B5505E] hover:to-[#9C3F4D]'"
                 >
                     <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6L3.5 10 7 14M13 6l3.5 4-3.5 4M11.5 4l-3 12"/></svg>
                 </button>
@@ -438,61 +479,80 @@
                     <p x-show="loading" class="text-sm text-ink-500">Loading…</p>
 
                     <div
-                        x-show="!loading"
-                        class="grid gap-4"
-                        style="grid-template-columns: repeat(3, 1fr);"
+                        x-show="!loading && (subfolders.length > 0 || commands.length > 0)"
+                        class="max-w-5xl border border-white/[0.07]"
                     >
+                        <div class="cmd-list-row cmd-head">
+                            <span></span>
+                            <span>Name</span>
+                            <span>First command</span>
+                            <span class="text-right">Count</span>
+                            <span></span>
+                        </div>
+
                         <template x-for="folder in subfolders" :key="folder.id">
                             <div
                                 @click="selectFolder(folder.id)"
-                                class="rounded-2xl border-2 border-dashed border-white/15 hover:border-amber-500/40 hover:bg-amber-500/[0.04] p-5 flex flex-col gap-2.5 transition-all duration-150 relative group cursor-pointer"
+                                class="cmd-list-row group cursor-pointer"
+                                style="--c: rgba(245, 158, 11, 0.7)"
                             >
-                                <div class="absolute top-3 right-3 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-150">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" class="text-amber-400/80"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+                                <span class="text-sm font-semibold text-white truncate" :title="folder.name" x-text="folder.name"></span>
+                                <span class="text-xs text-ink-500">Folder</span>
+                                <span></span>
+                                <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                                     <button
                                         @click.stop="openRenameFolderModal(folder)"
                                         title="Rename folder"
-                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-amber-400 hover:bg-amber-500/10"
+                                        class="tile-action hover:text-amber-400 hover:bg-amber-500/10"
                                     >
                                         <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M13.5 2.5a1.5 1.5 0 012.121 2.121l-8.5 8.5-2.828.707.707-2.828 8.5-8.5z"/></svg>
                                     </button>
                                     <button
                                         @click.stop="deleteFolder(folder)"
                                         title="Delete folder"
-                                        class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10"
+                                        class="tile-action hover:text-red-400 hover:bg-red-500/10"
                                     >
                                         <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
                                         </svg>
                                     </button>
                                 </div>
-                                <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor" class="text-amber-400/80"><path d="M2 6a2 2 0 012-2h4.5l1.5 2H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-12" x-text="folder.name"></h3>
                             </div>
                         </template>
 
                         <template x-for="cmd in commands" :key="cmd.id">
                             <div
                                 @click="viewCommand(cmd)"
-                                class="card p-5 flex flex-col gap-2.5 border-l-[3px] hover:-translate-y-0.5 hover:shadow-popover relative group cursor-pointer"
-                                :class="activeCategory === 'office' ? 'border-l-emerald-500/60' : 'border-l-blue-500/60'"
+                                class="cmd-list-row group cursor-pointer"
+                                style="--c: rgba(162, 62, 76, 0.8)"
                             >
-                                <button
-                                    @click.stop="deleteCommand(cmd)"
-                                    title="Delete command set"
-                                    class="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 opacity-0 group-hover:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150"
-                                >
-                                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
-                                    </svg>
-                                </button>
-                                <h3 class="font-semibold text-sm leading-snug text-white tracking-tight pr-6" x-text="cmd.title"></h3>
-                                <p class="text-xs text-ink-500" x-text="cmd.rows.length + (cmd.rows.length === 1 ? ' command' : ' commands')"></p>
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="text-ink-500"><path d="M4 6l4 4-4 4M10 15h6"/></svg>
+                                <span class="text-sm font-semibold text-white truncate" :title="cmd.title" x-text="cmd.title"></span>
+                                <code
+                                    class="font-mono text-[12px] truncate"
+                                    :class="cmd.rows.length ? 'text-[#f3c98b]/80' : 'text-ink-500'"
+                                    :title="cmd.rows[0]?.value || ''"
+                                    x-text="cmd.rows[0]?.value || 'Empty'"
+                                ></code>
+                                <span class="font-mono text-[11px] text-ink-500 text-right" x-text="cmd.rows.length"></span>
+                                <div class="flex items-center justify-end opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                                    <button
+                                        @click.stop="deleteCommand(cmd)"
+                                        title="Delete command set"
+                                        class="tile-action hover:text-red-400 hover:bg-red-500/10"
+                                    >
+                                        <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </template>
                     </div>
 
                     <div x-show="!loading && commands.length === 0 && subfolders.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
-                        <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
+                        <div class="w-14 h-14 bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
                             <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><path d="M7 6L3.5 10 7 14M13 6l3.5 4-3.5 4M11.5 4l-3 12"/></svg>
                         </div>
                         <p class="text-sm text-ink-500">Nothing here yet. Create a command set or a folder to get started.</p>
@@ -501,7 +561,7 @@
             </template>
 
             <template x-if="selectedCommand">
-                <div class="max-w-3xl">
+                <div class="max-w-5xl">
                     <button @click="selectedCommand = null; isEditingCommandDetail = false; isNewCommand = false;" class="flex items-center gap-1.5 text-sm text-ink-500 hover:text-white transition-colors mb-6">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
                         Back
@@ -512,24 +572,27 @@
                         <div>
                             <h1 class="text-2xl font-bold text-white tracking-tight mb-5" x-text="selectedCommand.title"></h1>
 
-                            <div class="rounded-2xl border border-white/[0.06] overflow-hidden">
+                            <div class="border border-white/[0.07]">
+                                <div x-show="selectedCommand.rows.length > 0" class="cmd-row cmd-head">
+                                    <span>#</span>
+                                    <span>What</span>
+                                    <span>Command</span>
+                                    <span></span>
+                                </div>
+
                                 <template x-for="(row, idx) in selectedCommand.rows" :key="idx">
-                                    <div
-                                        x-data="{ copied: false }"
-                                        class="flex items-center gap-4 px-5 py-3.5"
-                                        :class="idx % 2 === 0 ? 'bg-white/[0.02]' : ''"
-                                    >
-                                        <div class="flex-1 text-sm text-ink-300 min-w-0" x-text="row.label"></div>
+                                    <div x-data="{ copied: false }" class="cmd-row">
+                                        <span class="font-mono text-[11px] text-ink-500" x-text="String(idx + 1).padStart(2, '0')"></span>
+                                        <span class="text-sm text-white truncate" :title="row.label" x-text="row.label"></span>
+                                        <code class="font-mono text-[12.5px] text-[#f3c98b] truncate" :title="row.value" x-text="row.value"></code>
                                         <button
                                             type="button"
                                             @click="navigator.clipboard.writeText(row.value); copied = true; setTimeout(() => copied = false, 1500)"
-                                            class="shrink-0 flex items-center gap-2 rounded-lg bg-black/40 border border-white/10 pl-3 pr-2.5 py-1.5 font-mono text-xs text-emerald-300 hover:border-white/20 hover:bg-black/60 transition-all max-w-[60%]"
+                                            class="border py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors"
+                                            :class="copied ? 'border-emerald-400/50 text-emerald-400' : 'border-white/[0.16] text-ink-400 hover:text-white hover:bg-ink-800'"
                                             title="Copy to clipboard"
-                                        >
-                                            <span class="truncate" x-text="row.value"></span>
-                                            <svg x-show="!copied" width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-ink-400"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M4.5 13H4a1 1 0 01-1-1V4a1 1 0 011-1h8a1 1 0 011 1v.5"/></svg>
-                                            <svg x-cloak x-show="copied" width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-emerald-400"><path d="M4 10l4 4 8-8"/></svg>
-                                        </button>
+                                            x-text="copied ? 'Copied' : 'Copy'"
+                                        ></button>
                                     </div>
                                 </template>
 
@@ -559,7 +622,7 @@
                                     type="text"
                                     x-model="commandDetailForm.title"
                                     placeholder="Untitled"
-                                    class="w-full bg-transparent text-2xl font-bold text-white tracking-tight placeholder-ink-600 outline-none border-b border-white/10 focus:border-indigo-500/60 pb-2 transition-colors"
+                                    class="w-full bg-transparent text-2xl font-bold text-white tracking-tight placeholder-ink-600 outline-none border-b border-white/10 focus:border-amber-600/60 pb-2 transition-colors"
                                 >
                                 <p class="text-xs text-red-400 mt-1.5" x-show="errors.title" x-text="errors.title?.[0]"></p>
                             </div>
@@ -592,7 +655,7 @@
                                 <button
                                     type="submit"
                                     class="btn-primary"
-                                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
+                                    :class="'from-[#A23E4C] to-[#8A2F3C] hover:from-[#B5505E] hover:to-[#9C3F4D]'"
                                 >Save</button>
                                 <button type="button" @click="cancelEditCommandDetail()" class="btn-ghost">Cancel</button>
                             </div>
@@ -604,7 +667,12 @@
     </main>
 
     <!-- Main: Tasks -->
-    <main x-show="activeApp === 'task'" x-cloak class="flex-1 flex flex-col overflow-hidden bg-ink-950">
+    <main
+        x-show="activeApp === 'task'"
+        x-cloak
+        @keydown.window="if (activeApp === 'task' && $event.key.toLowerCase() === 'n' && !$event.ctrlKey && !$event.metaKey && !$event.altKey && !['INPUT', 'TEXTAREA', 'SELECT'].includes($event.target.tagName) && !$event.target.isContentEditable) { $event.preventDefault(); $refs.taskInput.focus(); }"
+        class="flex-1 flex flex-col overflow-hidden bg-ink-950"
+    >
         <header class="border-b border-white/[0.06] px-8 py-5 flex items-center gap-4">
             <div class="flex items-center gap-1.5 text-sm text-ink-500 min-w-0 flex-1">
                 <span class="text-white font-medium">Tasks</span>
@@ -625,118 +693,132 @@
         </header>
 
         <div class="flex-1 overflow-y-auto p-8">
-            <form @submit.prevent="addTask()" class="mb-6 flex items-center gap-3 max-w-2xl">
-                <input
-                    type="text"
-                    x-model="taskForm.title"
-                    placeholder="Add a task and press Enter…"
-                    class="input-field"
-                >
-                <button
-                    type="submit"
-                    class="btn-primary shrink-0"
-                    :class="activeCategory === 'office' ? 'from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500' : 'from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500'"
-                >Add</button>
-            </form>
-
-            <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
-
-            <div x-show="!taskLoading" class="flex flex-col gap-2 max-w-2xl">
-                <template x-for="task in sortedTasks()" :key="task.id">
-                    <div
-                        class="card p-3 flex items-center gap-2.5 border-l-[3px] transition-all duration-200"
-                        :class="task.status === 'completed'
-                            ? 'opacity-40 border-l-white/10'
-                            : task.status === 'critical'
-                                ? 'border-l-red-500/60 bg-[#2a1414]'
-                                : task.status === 'upcoming'
-                                    ? 'border-l-amber-500/60 bg-[#241d10]'
-                                    : (activeCategory === 'office' ? 'border-l-emerald-500/60 bg-[#0f231d]' : 'border-l-blue-500/60 bg-[#141b2e]')"
+            <div class="max-w-5xl flex flex-col gap-5">
+                <form @submit.prevent="addTask()" class="flex border border-white/[0.16] bg-ink-900 transition-colors focus-within:border-amber-600/60">
+                    <input
+                        type="text"
+                        x-ref="taskInput"
+                        x-model="taskForm.title"
+                        placeholder="Add a task and press Enter…"
+                        class="flex-1 min-w-0 bg-transparent px-4 py-3 text-sm text-ink-100 placeholder-ink-500 outline-none"
                     >
+                    <span class="flex items-center pr-3" title="Press N to add a task">
+                        <kbd class="ledger-kbd">N</kbd>
+                    </span>
+                    <button
+                        type="submit"
+                        class="px-6 text-sm font-semibold text-white bg-[#A23E4C] hover:bg-[#B5505E] transition-colors"
+                    >Add</button>
+                </form>
+
+                <div class="grid grid-cols-4 border border-white/[0.07]">
+                    <template x-for="status in taskStatuses" :key="status.key">
                         <button
-                            @click="toggleTaskCompleted(task)"
-                            title="Mark complete"
-                            class="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150"
-                            :class="task.status === 'completed' ? 'bg-emerald-500 border-emerald-500' : 'border-white/20 hover:border-white/40'"
+                            type="button"
+                            @click="filterTasks(taskStatusFilter === status.key ? null : status.key)"
+                            class="ledger-stat"
+                            :class="taskStatusFilter === status.key ? 'ledger-stat-active' : ''"
+                            :style="`--c: ${status.color}`"
                         >
-                            <svg x-show="task.status === 'completed'" width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
+                            <span class="text-[26px] font-bold leading-tight tabular-nums" :style="`color: ${status.color}`" x-text="taskCount(status.key)"></span>
+                            <span class="text-[11px] font-semibold uppercase tracking-widest text-ink-400" x-text="status.label"></span>
                         </button>
+                    </template>
+                </div>
 
-                        <span
-                            class="flex-1 text-sm"
-                            :class="task.status === 'completed' ? 'line-through text-ink-500' : 'text-white'"
-                            x-text="task.title"
-                        ></span>
+                <p x-show="taskLoading" class="text-sm text-ink-500">Loading…</p>
 
-                        <div
-                            x-show="task.status !== 'completed'"
-                            x-data="{ open: false }"
-                            @click.outside="open = false"
-                            class="relative shrink-0"
-                        >
+                <div x-show="!taskLoading && visibleTasks().length > 0" class="border border-white/[0.07]">
+                    <div class="ledger-row ledger-head">
+                        <span></span>
+                        <span>#</span>
+                        <span>Task</span>
+                        <span>Status</span>
+                        <span>Age</span>
+                        <span></span>
+                    </div>
+
+                    <template x-for="(task, index) in visibleTasks()" :key="task.id">
+                        <div class="ledger-row group" :style="`--c: ${taskStatusMeta(task.status).color}`">
                             <button
-                                type="button"
-                                @click="open = !open"
-                                class="flex items-center gap-1.5 text-[10px] font-semibold pl-2 pr-1.5 py-1 rounded-full transition-all duration-150 active:scale-[0.96]"
-                                :class="{
-                                    'bg-blue-500/10 text-blue-400 hover:bg-blue-500/20': task.status === 'active',
-                                    'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20': task.status === 'upcoming',
-                                    'bg-red-500/10 text-red-400 hover:bg-red-500/20': task.status === 'critical',
-                                }"
+                                @click="toggleTaskCompleted(task)"
+                                :title="task.status === 'completed' ? 'Mark not done' : 'Mark done'"
+                                class="w-[18px] h-[18px] border-[1.5px] flex items-center justify-center transition-colors"
+                                :class="task.status === 'completed' ? 'bg-emerald-400 border-emerald-400' : 'border-white/25 hover:border-white/50'"
                             >
-                                <span
-                                    class="w-1.5 h-1.5 rounded-full shrink-0"
-                                    :class="{
-                                        'bg-blue-400': task.status === 'active',
-                                        'bg-amber-400 animate-pulse': task.status === 'upcoming',
-                                        'bg-red-400 animate-pulse': task.status === 'critical',
-                                    }"
-                                ></span>
-                                <span x-text="task.status.charAt(0).toUpperCase() + task.status.slice(1)"></span>
-                                <svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150" :class="open ? '-rotate-180' : ''"><path d="M5 8l5 5 5-5"/></svg>
+                                <svg x-show="task.status === 'completed'" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="#06281c" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>
                             </button>
 
-                            <div
-                                x-show="open"
-                                x-cloak
-                                x-transition:enter="transition ease-out duration-100"
-                                x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
-                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-75"
-                                x-transition:leave-start="opacity-100 scale-100"
-                                x-transition:leave-end="opacity-0 scale-95"
-                                class="absolute right-0 top-full mt-1.5 w-32 rounded-xl bg-ink-800 border border-white/[0.08] shadow-popover py-1 z-20"
-                            >
-                                <template x-for="option in [{key: 'active', label: 'Active', dot: 'bg-blue-400', text: 'text-blue-400'}, {key: 'upcoming', label: 'Upcoming', dot: 'bg-amber-400', text: 'text-amber-400'}, {key: 'critical', label: 'Critical', dot: 'bg-red-400', text: 'text-red-400'}]" :key="option.key">
-                                    <button
-                                        type="button"
-                                        @click="updateTaskStatus(task, option.key); open = false"
-                                        class="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors hover:bg-white/[0.06]"
-                                        :class="task.status === option.key ? option.text : 'text-ink-400'"
-                                    >
-                                        <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="option.dot"></span>
-                                        <span x-text="option.label"></span>
-                                        <svg x-show="task.status === option.key" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ml-auto"><path d="M4 10l4 4 8-8"/></svg>
-                                    </button>
-                                </template>
+                            <span class="font-mono text-[11px] text-ink-500" x-text="String(index + 1).padStart(2, '0')"></span>
+
+                            <span
+                                class="truncate text-sm"
+                                :class="task.status === 'completed' ? 'line-through text-ink-500' : 'text-white'"
+                                :title="task.title"
+                                x-text="task.title"
+                            ></span>
+
+                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                <button
+                                    type="button"
+                                    @click="open = !open"
+                                    class="inline-flex items-center gap-1.5 border px-2 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors hover:bg-white/[0.04]"
+                                    :style="`color: ${taskStatusMeta(task.status).color}; border-color: ${taskStatusMeta(task.status).color}59`"
+                                >
+                                    <span class="w-1.5 h-1.5 shrink-0" :style="`background: ${taskStatusMeta(task.status).color}`"></span>
+                                    <span x-text="taskStatusMeta(task.status).label"></span>
+                                    <svg width="9" height="9" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-150" :class="open ? '-rotate-180' : ''"><path d="M5 8l5 5 5-5"/></svg>
+                                </button>
+
+                                <div
+                                    x-show="open"
+                                    x-cloak
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="opacity-0 -translate-y-1"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    class="absolute left-0 top-full mt-1 w-36 bg-ink-800 border border-white/[0.08] shadow-popover py-1 z-20"
+                                >
+                                    <template x-for="option in taskStatuses" :key="option.key">
+                                        <button
+                                            type="button"
+                                            @click="updateTaskStatus(task, option.key); open = false"
+                                            class="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-left transition-colors hover:bg-white/[0.06]"
+                                            :class="task.status === option.key ? '' : 'text-ink-400'"
+                                            :style="task.status === option.key ? `color: ${option.color}` : ''"
+                                        >
+                                            <span class="w-1.5 h-1.5 shrink-0" :style="`background: ${option.color}`"></span>
+                                            <span x-text="option.label"></span>
+                                            <svg x-show="task.status === option.key" width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="ml-auto"><path d="M4 10l4 4 8-8"/></svg>
+                                        </button>
+                                    </template>
+                                </div>
                             </div>
+
+                            <span
+                                class="font-mono text-[11px] text-ink-500"
+                                :title="task.created_at ? 'Added ' + new Date(task.created_at).toLocaleString() : ''"
+                                x-text="taskAge(task.created_at)"
+                            ></span>
+
+                            <button
+                                @click="deleteTask(task)"
+                                title="Delete task"
+                                class="w-7 h-7 flex items-center justify-center text-ink-500 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-red-400 hover:bg-red-500/10 transition-all"
+                            >
+                                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
+                            </button>
                         </div>
+                    </template>
+                </div>
 
-                        <button
-                            @click="deleteTask(task)"
-                            title="Delete task"
-                            class="w-7 h-7 rounded-lg flex items-center justify-center text-ink-500 hover:text-red-400 hover:bg-red-500/10 transition-all shrink-0"
-                        >
-                            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4a1 1 0 011-1h2a1 1 0 011 1v2m3 0-.7 9.1a2 2 0 01-2 1.9H7.7a2 2 0 01-2-1.9L5 6h10z"/></svg>
-                        </button>
-                    </div>
-                </template>
-
-                <div x-show="!taskLoading && tasks.length === 0" class="flex flex-col items-center justify-center py-24 text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center mb-4">
-                        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="text-ink-500"><rect x="3" y="3" width="14" height="14" rx="3"/><path d="M7 10l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    </div>
-                    <p class="text-sm text-ink-500">No tasks here yet. Add one above to get started.</p>
+                <div x-show="!taskLoading && visibleTasks().length === 0" class="flex flex-col items-center justify-center py-20 text-center border border-dashed border-white/[0.1]">
+                    <p
+                        class="text-sm text-ink-500"
+                        x-text="taskStatusFilter ? 'No ' + taskStatusMeta(taskStatusFilter).label.toLowerCase() + ' tasks.' : 'No tasks here yet. Add one above to get started.'"
+                    ></p>
                 </div>
             </div>
         </div>
@@ -762,7 +844,7 @@
                 <h2 class="text-base font-semibold text-white tracking-tight" x-text="renamingFolderId ? 'Rename Folder' : 'New Folder'"></h2>
                 <span
                     class="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                    :class="activeCategory === 'office' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-blue-500/10 text-blue-400'"
+                    :class="'bg-[#A23E4C]/10 text-[#D98A96]'"
                     x-text="activeCategory === 'office' ? '💼 Work' : '🏠 Personal'"
                 ></span>
             </div>
@@ -793,6 +875,12 @@
             taskStatusFilter: null,
             taskForm: { title: '' },
             taskLoading: false,
+            taskStatuses: [
+                { key: 'critical', label: 'Critical', color: '#ef4444' },
+                { key: 'active', label: 'Active', color: '#60a5fa' },
+                { key: 'upcoming', label: 'Upcoming', color: '#fbbf24' },
+                { key: 'completed', label: 'Completed', color: '#34d399' },
+            ],
             folderTree: [],
             nodesById: {},
             selectedFolderId: null,
@@ -880,9 +968,6 @@
                 this.taskLoading = true;
 
                 const params = new URLSearchParams({ category: this.activeCategory });
-                if (this.taskStatusFilter) {
-                    params.set('status', this.taskStatusFilter);
-                }
 
                 const res = await fetch(`/api/tasks?${params}`);
                 this.tasks = await res.json();
@@ -891,13 +976,36 @@
 
             filterTasks(status) {
                 this.taskStatusFilter = status;
-                this.loadTasks();
             },
 
-            sortedTasks() {
+            visibleTasks() {
                 const order = { critical: 0, active: 1, upcoming: 2, completed: 3 };
 
-                return [...this.tasks].sort((a, b) => order[a.status] - order[b.status]);
+                return this.tasks
+                    .filter((t) => !this.taskStatusFilter || t.status === this.taskStatusFilter)
+                    .sort((a, b) => order[a.status] - order[b.status]);
+            },
+
+            taskCount(status) {
+                return this.tasks.filter((t) => t.status === status).length;
+            },
+
+            taskStatusMeta(status) {
+                return this.taskStatuses.find((s) => s.key === status) || this.taskStatuses[1];
+            },
+
+            taskAge(date) {
+                if (!date) {
+                    return '';
+                }
+
+                const minutes = (Date.now() - new Date(date).getTime()) / 60000;
+
+                if (minutes < 60) return Math.max(1, Math.round(minutes)) + 'm';
+                if (minutes < 1440) return Math.round(minutes / 60) + 'h';
+                if (minutes < 43200) return Math.round(minutes / 1440) + 'd';
+
+                return Math.round(minutes / 43200) + 'mo';
             },
 
             async addTask() {
@@ -918,10 +1026,7 @@
 
                 const task = await response.json();
                 this.taskForm.title = '';
-
-                if (!this.taskStatusFilter || this.taskStatusFilter === 'active') {
-                    this.tasks.push(task);
-                }
+                this.tasks.push(task);
             },
 
             async updateTaskStatus(task, status) {
@@ -937,10 +1042,6 @@
 
                 const updated = await response.json();
                 task.status = updated.status;
-
-                if (this.taskStatusFilter && this.taskStatusFilter !== updated.status) {
-                    this.tasks = this.tasks.filter((t) => t.id !== task.id);
-                }
             },
 
             toggleTaskCompleted(task) {

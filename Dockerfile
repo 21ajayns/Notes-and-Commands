@@ -44,8 +44,10 @@ RUN composer dump-autoload --optimize --no-dev \
 COPY docker/start.sh /usr/local/bin/start
 RUN chmod +x /usr/local/bin/start
 
-# Render sets PORT at runtime; 10000 is its default.
-ENV PORT=10000
+# Render sets PORT at runtime; 10000 is its default. Logs go to stderr so they
+# show in Render's log view unless LOG_CHANNEL is set to something else.
+ENV PORT=10000 \
+    LOG_CHANNEL=stderr
 EXPOSE 10000
 
 CMD ["start"]

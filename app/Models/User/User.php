@@ -58,6 +58,11 @@ final class User extends Authenticatable
         return $this->belongsTo(Organization::class);
     }
 
+    public function getId(): string
+    {
+        return $this->getAttribute('id');
+    }
+
     public function getOrganizationId(): string
     {
         return $this->getAttribute('organization_id');
